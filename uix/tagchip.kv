@@ -1,12 +1,16 @@
 <TagChip>:
     size_hint: None, None
-    adaptive_size: True
-    padding: dp(3)
+    adaptive_width: True
+    height: dp(20)
+    padding: dp(5)
     radius: dp(10)
-    font_size: dp(12)
+    text_color: self.theme_cls.opposite_text_color
+    theme_text_color: "Custom"
+    font_style: "Body1"
+    halign: "center"
     canvas.before:
         Color:
-            rgba: self.theme_cls.accent_color
+            rgba: self.tag_color
         RoundedRectangle:
             size: self.size
             pos: self.pos

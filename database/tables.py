@@ -1,12 +1,6 @@
 from .db_api import *
 from datetime import datetime
-
-
-def am_pm(t):
-    hh = t.hour if t.hour <= 12 else t.hour - 12
-    c = "am" if t.hour <= 12 else "pm"
-    mm = t.minute if t.minute > 9 else "0" + str(t.minute)
-    return f"{'' if hh > 9 else 0}{hh}:{mm} {c}"
+from utils import am_pm
 
 
 class Tags(DBTable):
@@ -40,6 +34,9 @@ for t in ts:
     Tags.all[t[1]] = Tag(True, id=t[0], tag=t[1], color=t[2])
 
 
+Tag.table = Tag().table
+
+
 class Entries(DBTable):
     default_values = {
         "id": 0,
@@ -67,6 +64,10 @@ class Entry(Item):
         tag_ids = tuple(entry_tag[1] for entry_tag in db_api.read("entries_tags", entry_id=self.id))
         return set(Tag().table.get_items(where=[('id', "in", db_tuple(tag_ids))]))
 
+    def validate(self, fields_values):
+        fields_values["timestamp"] = datetime.now().replace(microsecond=0)
+        return fields_values
+
     def on_saved(self):
         tag_list = self.tags
         new_tag_list = set(map(Tag.add_or_get_tag, self.current_tags))
@@ -81,4 +82,6 @@ class Entry(Item):
         tags = [str(tag) for tag in self.current_tags]
         return f"\t{am_pm(self.timestamp)}: {' '.join(tags)}\n\t\t{self.content}"
 
+
+Entry.table = Entry().table
 
