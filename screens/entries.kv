@@ -1,0 +1,120 @@
+#:import EntryCard uix.EntryCard
+#:import TagChip uix.TagChip
+
+<EntriesScreen>:
+    padding: dp(10)
+    entry_edit: True
+    MDBoxLayout:
+        orientation: "vertical"
+        MDBoxLayout:
+            md_bg_color: self.theme_cls.bg_light
+            size_hint: 1, None
+            padding: dp(10), dp(5), dp(10), 0
+            height: dp(60)
+            MDTextField:
+                icon_left: "magnify"
+                pos_hint: {"top": 1}
+            MDIconButton:
+                icon: "filter"
+                pos_hint: {"center_y": 0.5}
+        MDBoxLayout:
+            md_bg_color: self.theme_cls.bg_light
+            size_hint: 1, None
+            height: dp(40)
+            MDFlatButton:
+                text: "From"
+            MDFlatButton:
+                text: "To"
+        MDScrollView:
+            data: root.view_data
+            MDGridLayout:
+                cols: 1
+                padding: dp(10)
+                spacing: dp(5)
+                EntryCard:
+                EntryCard:
+#        MDRecycleView:
+#            data: root.view_data
+#            MDRecycleGridLayout:
+#                cols: 1
+                MDChip:
+                    text: "TimeLogger"
+                    md_bg_color: 1, 0, 0, .5
+                    text_color: 1,1,1,1
+                    adaptive_width: True
+                    color: 1,1, 1,1
+                    height: dp(20)
+
+    MDCard:
+        id: switch_entry_button
+        y: edit_card.top
+        x: edit_card.x
+        adaptive_size: True
+        padding: dp(10)
+        md_bg_color: self.theme_cls.bg_light[:3] + [0.5] if not root.entry_edit else self.theme_cls.bg_light
+        radius: [dp(16), dp(16), -10, 0] if root.entry_edit else dp(16)
+        on_press:
+            root.entry_edit = True
+            if edit_card.y < 0: root.animate_edit_card()
+        MDLabel:
+            text: "Entry"
+            adaptive_size: True
+            color: self.theme_cls.disabled_hint_text_color if not root.entry_edit else self.theme_cls.primary_dark
+
+
+    MDCard:
+        id: switch_post_button
+        y: edit_card.top
+        x: switch_entry_button.right + 1
+        adaptive_size: True
+        padding: dp(10)
+        md_bg_color: self.theme_cls.bg_light[:3] + [0.5] if root.entry_edit else self.theme_cls.bg_light
+        radius: [dp(16), dp(16), -10, -10] if not root.entry_edit else dp(16)
+        on_press:
+            root.entry_edit = False
+            if edit_card.y < 0: root.animate_edit_card()
+        MDLabel:
+            text: "Post"
+            adaptive_size: True
+            color: self.theme_cls.disabled_hint_text_color if root.entry_edit else self.theme_cls.primary_dark
+
+
+    MDCard: # Edit Card
+        id: edit_card
+        size_hint: 0.99, None
+        height: edit_field.height + tag_box.height + dp(10)
+        padding: dp(5)
+        spacing: dp(5)
+        pos_hint: {'center_x': 0.5}
+        radius: [0, dp(16), dp(16), dp(16)] if root.entry_edit else dp(16)
+        orientation: "vertical"
+        y: 5
+        MDBoxLayout:
+            adaptive_height: True
+            size_hint: 1, 0
+            pos_hint: {'center_y': 0.5}
+            MDTextField:
+                id: edit_field
+                mode: "rectangle"
+                hint_text: "Edit"
+                multiline: True
+            MDBoxLayout:
+                pos_hint: {'center_y': 0.5}
+                adaptive_size: True
+                orientation: "vertical" if edit_field.height > dp(80) else "horizontal"
+                MDIconButton:
+                    icon: "content-save" if root.entry_edit else "send"
+                    icon_size: dp(20)
+                MDIconButton:
+                    icon: "attachment-plus"
+                    icon_size: dp(20)
+
+        MDBoxLayout:
+            id: tag_box
+            size_hint: 1, None
+            adaptive_height: True
+            TagChip:
+                text: "timelogger"
+                on_press: self.parent.remove_widget(self)
+
+

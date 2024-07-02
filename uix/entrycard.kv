@@ -1,0 +1,48 @@
+#:import TagChip uix.TagChip
+
+<EntryCard>:
+    md_bg_color: self.theme_cls.bg_dark
+    orientation: "vertical"
+    adaptive_height: True
+    MDBoxLayout:
+        size_hint: 1, None
+        adaptive_height: True
+        padding: dp(5)
+        MDLabel:
+            text: "YYYY:MM:DD hh:mm xm"
+            adaptive_size: True
+            font_style: "Caption"
+            pos_hint: {"bottom": 1}
+        MDGridLayout:
+            orientation: "rl-tb"
+            rows: 1
+            adaptive_height: True
+            TagChip:
+                text: "Time_Logger"
+
+    MDSeparator:
+        size_hint: 1, None
+
+    MDLabel:
+        padding: dp(10)
+        text: "An Example Entry"
+        adaptive_size: True
+        font_size: sp(15)
+
+    MDSeparator:
+        size_hint: None, None
+        width: option_box.width + dp(20)
+        pos_hint: {"right": 1}
+
+    MDBoxLayout:
+        id: option_box
+        size_hint: None, None
+        adaptive_size: True
+        pos_hint: {"right": 1}
+        height: dp(50)
+        MDIconButton:
+            icon: "pencil"
+            icon_size: dp(15)
+        MDIconButton:
+            icon: "trash-can-outline"
+            icon_size: dp(15)

@@ -1,0 +1,13 @@
+<TagChip>:
+    size_hint: None, None
+    adaptive_size: True
+    padding: dp(3)
+    radius: dp(10)
+    font_size: dp(12)
+    canvas.before:
+        Color:
+            rgba: self.theme_cls.accent_color
+        RoundedRectangle:
+            size: self.size
+            pos: self.pos
+            radius: self.radius

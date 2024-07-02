@@ -1,0 +1,22 @@
+#:import EntriesScreen screens.EntriesScreen
+#:import PostScreen screens.PostScreen
+#:import AiToolScreen screens.AiToolScreen
+
+<SM>:
+    MDScreen:
+        name: "home"
+        MDBottomNavigation:
+#            use_text: False
+            height: dp(30)
+            EntriesScreen:
+                icon: "history"
+                text: "Entries"
+                name: "entries_screen"
+            PostScreen:
+                icon: "post"
+                text: "Posts"
+                name: "posts_screen"
+            AiToolScreen:
+                icon: "robot-excited-outline"
+                text: "Ai Tool"
+                name: "ai_tool_screen"
