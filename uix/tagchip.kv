@@ -10,7 +10,7 @@
     halign: "center"
     canvas.before:
         Color:
-            rgba: self.tag_color
+            rgba: self.tag_color if not self.disabled else self.disabled_color
         RoundedRectangle:
             size: self.size
             pos: self.pos

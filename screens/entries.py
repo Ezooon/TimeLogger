@@ -6,9 +6,10 @@ from kivy.metrics import dp
 from kivy.properties import ListProperty, BooleanProperty, ObjectProperty, DictProperty
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
 from kivymd.uix.pickers import MDDatePicker
+from plyer import filechooser
 
-from database import Entry, wrap_dt, Tags, db_tuple
-from uix import TagChip, EntryCard
+from database import Entry, wrap_dt, Tags, db_tuple, Attachment
+from uix import TagChip, EntryCard, AttachmentCard
 
 Builder.load_file("screens/entries.kv")
 today = date.today()
@@ -31,6 +32,8 @@ class EntriesScreen(MDBottomNavigationItem):
         self.re_add_tags = []
 
         self.date_dialog = MDDatePicker()
+
+        self.attach = lambda *_: filechooser.open_file(title="Pick a File", preview=True, on_selection=self.add_attachment,)
 
         Clock.schedule_once(self.setup, 0)
 
@@ -195,3 +198,19 @@ class EntriesScreen(MDBottomNavigationItem):
             field.text = text[:-1].replace(tag, "")
 
         Clock.schedule_once(remove_tag_from_text, 0)
+
+    def add_attachment(self, files):
+        for attachment in files:
+            self.ids.attachment_box.add_widget(AttachmentCard(attachment=Attachment(path=attachment)))
+
+    def save_entry(self):
+        content = self.ids.edit_field.text
+        tags = [tc.text for tc in self.ids.tag_box.children]
+        attachments = [att.attachment.path for att in self.ids.attachment_box.children]
+
+        Entry(tags=list(filter(bool, set(tags))), content=content, attachments=attachments).save()
+        self.load_entries()
+
+        self.ids.edit_field.text = ""
+        self.ids.tag_box.clear_widgets()
+        self.ids.attachment_box.clear_widgets()

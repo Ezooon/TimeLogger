@@ -92,7 +92,7 @@
     MDCard: # Edit Card
         id: edit_card
         size_hint: 0.99, None
-        height: edit_field.height + tag_box.height + dp(10)
+        height: attachment_box.height + edit_field.height + tag_box.height + dp(20)
         padding: dp(5)
         spacing: dp(5)
         pos_hint: {'center_x': 0.5}
@@ -100,6 +100,14 @@
         md_bg_color: "#444444"
         orientation: "vertical"
 #        y: 5
+        MDStackLayout:
+            id: attachment_box
+            orientation: "lr-tb"
+            adaptive_height: True
+            width: root.width
+            pos_hint: {'center_y': 0.5}
+            spacing: dp(5), dp(5)
+            padding: dp(1)#, 5, dp(10), 0
         MDBoxLayout:
             adaptive_height: True
             size_hint: 1, 0
@@ -116,9 +124,13 @@
                 MDIconButton:
                     icon: "feather" if root.entry_edit else "send"  # ToDo update the filter_tag_box tags when saving new tags
                     icon_size: dp(20)
+                    on_release:
+                        if root.entry_edit: root.save_entry()
                 MDIconButton:
                     icon: "attachment-plus"
                     icon_size: dp(20)
+                    on_release:
+                        root.attach()
 
         MDStackLayout:
             id: tag_box
