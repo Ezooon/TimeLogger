@@ -8,7 +8,8 @@ from kivy.properties import ObjectProperty, ColorProperty
 Builder.load_file("uix/tagchip.kv")
 
 
-class TagChip(RectangularRippleBehavior, ButtonBehavior, MDLabel): # ToDo Add touch behavior and have long presses delete tags form db
+class TagChip(RectangularRippleBehavior, ButtonBehavior, MDLabel):
+    # ToDo Add touch behavior and have long presses delete tags form db
     tag = ObjectProperty()
 
     tag_color = ColorProperty()

@@ -34,7 +34,22 @@ for t in ts:
     Tags.all[t[1]] = Tag(True, id=t[0], tag=t[1], color=t[2])
 
 
-Tag.table = Tag().table
+Tag.table = Tag().table  # ToDo fix: I need those here because the table item_cls, find a better way to initialize them.
+
+
+class Attachment(Item):
+    table = DBTable(name="attachments", default_values={
+        "id": 0,
+        "path": "",
+        "entry_id": 0,
+        "post_id": 0,
+    })
+
+    def __repr__(self):
+        return self.path
+
+
+Attachment.table = Attachment().table
 
 
 class Entries(DBTable):
@@ -46,11 +61,11 @@ class Entries(DBTable):
 
     def get_items(self, search_params=None, order_by="timestamp", where=None, tags_in=None, tags_out=None, **e_where):
         if tags_in:
-            id_tuples = db_api.read("entries_tags", test=True, where=[("tag_id", "in", db_tuple(tags_in))])
+            id_tuples = db_api.read("entries_tags", where=[("tag_id", "in", db_tuple(tags_in))])
             where.append(("id", "in", db_tuple(i_tup[0] for i_tup in id_tuples)))
 
         if tags_out:
-            id_tuples = db_api.read("entries_tags", test=True, where=[("tag_id", "in", db_tuple(tags_out))])
+            id_tuples = db_api.read("entries_tags", where=[("tag_id", "in", db_tuple(tags_out))])
             where.append(("id", "not in", db_tuple(i_tup[0] for i_tup in id_tuples)))
 
         return super().get_items(search_params, order_by, where, test=True, **e_where)
@@ -64,26 +79,25 @@ class Entries(DBTable):
 class Entry(Item):
     table = Entries()
 
-    def __init__(self, in_db=False, attachments=None, tags=None, **fields):
+    def __init__(self, in_db=False, attachments=set(), tags=None, **fields):
         super().__init__(in_db, **fields)
-        if attachments is None:
-            attachments = []
-        self.tags = set()
-        self.attachments = set()
 
         if self.in_db:
             self.tags = self.get_tags()
             self.attachments = self.get_attachments()
+        else:
+            self.tags = set()  # quotes
+            self.attachments = set()
 
         self.current_tags = tags or map(str, self.tags)
-        self.current_attachments = attachments or self.attachments
+        self.current_attachments = set(Attachment(path=att, entry_id=self.id) for att in attachments) or self.attachments
 
     def get_tags(self):
         tag_ids = tuple(entry_tag[1] for entry_tag in db_api.read("entries_tags", entry_id=self.id))
         return set(Tag().table.get_items(where=[('id', "in", db_tuple(tag_ids))]))
 
     def get_attachments(self):
-        attachments = set(att_path for att_id, att_path, *_ in db_api.read("attachments", entry_id=self.id))
+        attachments = Attachment.table.get_items(entry_id=self.id)
         return attachments
 
     def validate(self, fields_values):
@@ -108,9 +122,10 @@ class Entry(Item):
         to_delete = attachment_list - new_attachment_list
 
         for attachment in to_add:
-            db_api.create("attachments", entry_id=self.id, path=attachment)
+            attachment.entry_id = self.id
+            attachment.save()
         for attachment in to_delete:
-            db_api.delete("attachments", entry_id=self.id, path=attachment)
+            attachment.delete(entry_id=self.id, path=attachment)
 
     def on_saved(self):
         self.save_tags()

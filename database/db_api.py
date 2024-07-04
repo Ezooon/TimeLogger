@@ -98,8 +98,10 @@ db_api = DBAPI()
 class DBTable:
     default_values = {"id": 0}
 
-    def __init__(self):
-        self.name = type(self).__name__.lower()
+    def __init__(self, name="", default_values=None):
+        self.name = name or type(self).__name__.lower()
+        if default_values:
+            type(self).default_values = default_values
 
     def get_items(self, search_params=None, order_by="", where=None, **e_where):
         data = db_api.read(self.name, search_params, order_by, where, **e_where)

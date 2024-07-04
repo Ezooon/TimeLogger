@@ -11,7 +11,12 @@ def tags_entry(content: str, scape_char="%%"):
     content_lines = [] if content.startswith(scape_char) else [tag_starting_list.pop(0)]
     for line in tag_starting_list:
         if line:
-            first_space = line.find(" ")
+            if line.startswith('"'):
+                line = line[1:]
+                first_space = line.find('"')
+            else:
+                first_space = line.find(" ")
+
             if first_space == -1:
                 first_space = len(line)
             tags.append(line[:first_space])
