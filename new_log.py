@@ -51,7 +51,7 @@ while True:
 
     attachments = list(filter(exists, attachments))
 
-    Entry(tags=list(set(tags + more_tags)), content=content, attachments=attachments).save()
+    Entry(tags=list(filter(bool, set(tags + more_tags))), content=content, attachments=attachments).save()
     # print("tags:", tags, "more tags:", more_tags, "content:", content, "attachments:", attachments)
     print()
 

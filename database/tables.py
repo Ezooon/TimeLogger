@@ -68,7 +68,7 @@ class Entries(DBTable):
             id_tuples = db_api.read("entries_tags", where=[("tag_id", "in", db_tuple(tags_out))])
             where.append(("id", "not in", db_tuple(i_tup[0] for i_tup in id_tuples)))
 
-        return super().get_items(search_params, order_by, where, test=True, **e_where)
+        return super().get_items(search_params, order_by, where, **e_where)
 
     def check_values(self, raw_values):
         if "timestamp" in raw_values:

@@ -1,0 +1,37 @@
+<AttachmentCard>:
+    size_hint: None, None
+    size: dp(100), dp(100)
+    md_bg_color: self.theme_cls.bg_normal
+    radius: dp(20), dp(20), dp(20), dp(0)
+    FitImage:
+        source: root.path
+        size_hint: 1, 1
+        pos: root.pos
+        radius: root.radius
+    MDLabel:
+        size_hint: 1, None
+        adaptive_height: True
+        shorten_from: "left"
+        shorten: True
+
+        halign: "left"
+        valign: "bottom"
+        pos: root.pos
+        padding: dp(4)
+        text: root.path
+        font_style: "Caption"
+        icon_size: sp(15)
+        opacity: 0.5
+        canvas.before:
+            Color:
+                rgba: root.md_bg_color
+            RoundedRectangle:
+                size: self.size
+                pos: self.pos
+                radius: 0, dp(0), dp(20), 0
+
+    MDIconButton:
+        icon: "close"
+        pos_hint: {"top": 1, "right": 1}
+        icon_size: sp(17)
+        size_hint: 0.3, 0.3

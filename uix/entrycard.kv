@@ -1,4 +1,4 @@
-#:import TagChip uix.TagChip
+#:import AttachmentCard uix.AttachmentCard
 #:import dtstr utils.dtstr
 
 <EntryCard>:
@@ -22,10 +22,18 @@
     MDLabel:
         padding: dp(10)
         text: root.content
-#        size_hint: 1, None
         adaptive_height: True
         width: root.width
         font_size: sp(15)
+
+    MDStackLayout:
+        id: attachment_box
+        orientation: "lr-tb"
+        adaptive_height: True
+        width: root.width
+        pos_hint: {'center_y': 0.5}
+        spacing: dp(5), dp(5)
+        padding: dp(10), 0, dp(10), dp(5)
 
     MDSeparator:
 
