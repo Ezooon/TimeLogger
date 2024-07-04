@@ -7,7 +7,7 @@ from kivy.properties import ListProperty, BooleanProperty, ObjectProperty, DictP
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
 from kivymd.uix.pickers import MDDatePicker
 
-from database import Entry, wrap_dt, Tags
+from database import Entry, wrap_dt, Tags, db_tuple
 from uix import TagChip, EntryCard
 
 Builder.load_file("screens/entries.kv")
@@ -71,6 +71,10 @@ class EntriesScreen(MDBottomNavigationItem):
                 else:
                     self.re_add_tags.append(tagc)
 
+            # so the filters don't update while choosing tags
+            if not self.show_filters:
+                self.load_entries()
+
         for key, tag in Tags.all.items():
             self.ids.filter_tag_box.add_widget(TagChip(
                 tag=tag,
@@ -81,9 +85,11 @@ class EntriesScreen(MDBottomNavigationItem):
         entries = Entry.table.get_items(
             search_params={"content": self.ids.search_field.text},
             where=[
-                      ("timestamp", ">", wrap_dt(self.from_date)),
-                      ("timestamp", "<", wrap_dt(self.to_date))
+                    ("timestamp", ">", wrap_dt(self.from_date)),
+                    ("timestamp", "<", wrap_dt(self.to_date)),
                   ],
+            tags_in=tuple(t.id for _, t in self.filter_with.items()),
+            tags_out=tuple(t.id for _, t in self.filter_out.items()),
             **kwargs
         )
 
@@ -147,6 +153,8 @@ class EntriesScreen(MDBottomNavigationItem):
                 d=0.2
             ).start(self.ids.filter_tag_box_container)
 
+            self.load_entries()
+
         # putting the important tags close to the top
         self.ids.filter_tag_box.clear_widgets(self.re_add_tags)
         for tagc in self.re_add_tags:
@@ -157,6 +165,9 @@ class EntriesScreen(MDBottomNavigationItem):
         r = super(EntriesScreen, self).on_touch_down(touch)
         if self.to_local(*touch.pos)[1] > self.ids.edit_card.top + 50 and self.ids.edit_card.y >= 0:
             self.animate_edit_card()
+        if self.show_filters and self.ids.filter_tag_box_container.y > self.to_local(*touch.pos)[1]:
+            self.show_filters = False
+
         return r
 
     def on_entry_edit(self, _, __):

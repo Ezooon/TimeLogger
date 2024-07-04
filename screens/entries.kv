@@ -114,7 +114,7 @@
                 adaptive_size: True
                 orientation: "vertical" if edit_field.height > dp(80) else "horizontal"
                 MDIconButton:
-                    icon: "feather" if root.entry_edit else "send"
+                    icon: "feather" if root.entry_edit else "send"  # ToDo update the filter_tag_box tags when saving new tags
                     icon_size: dp(20)
                 MDIconButton:
                     icon: "attachment-plus"
@@ -133,7 +133,7 @@
         id: filter_tag_box_container
         size_hint: None, None
         height: filter_tag_box_container_placeholder.height
-        width: filter_tag_box_container_placeholder.width# if filter_tag_box.width > filter_tag_box_container_placeholder.width else filter_tag_box.width
+        width: filter_tag_box_container_placeholder.width
         pos: filter_tag_box_container_placeholder.pos
         corner_radius: 0
         radius: 0, 0, 0, self.corner_radius

@@ -22,5 +22,4 @@ class TagChip(RectangularRippleBehavior, ButtonBehavior, MDLabel): # ToDo Add to
         pass
 
     def on_tag(self, _, tag):
-        print(tag)
         self.text = tag.tag

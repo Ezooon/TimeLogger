@@ -16,3 +16,6 @@ class TimeLogger(MDApp):
 
 
 TimeLogger().run()
+
+from database.db_api import db_api
+db_api.close()

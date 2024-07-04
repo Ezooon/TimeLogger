@@ -5,9 +5,18 @@ def wrap_dt(timestamp):
     return "'" + str(timestamp) + "'"
 
 
-def db_tuple(values: tuple):
+def db_tuple(values, wrapper=""):
+    values = tuple(values)
     if len(values) == 1:
-        return f"({values[0]})"
+        if callable(wrapper):
+            return f"({wrapper(values[0])})"
+        return f"({wrapper}{values[0]}{wrapper})"
+
+    if wrapper:
+        if callable(wrapper):
+            return str(map(wrapper, values))
+        else:
+            return str(tuple(f"({wrapper}{value}{wrapper})" for value in values))
     return str(values)
 
 
@@ -18,6 +27,7 @@ class DBAPI:
     def __init__(self):
         self.conn = connect(db_path)
         self.cur = self.conn.cursor()
+        self.close = self.conn.close
 
     def create(self, table: str, **kwargs):
         keys = list(kwargs.keys())
@@ -27,7 +37,7 @@ class DBAPI:
         self.conn.commit()
         return self.read(table)[-1]
 
-    def read(self, table: str, search_params=None, order_by="", where=None, **e_where):
+    def read(self, table: str, search_params=None, order_by="", where=None, test=False, **e_where):
         if where is None:
             where = []
         if search_params is None:
@@ -51,6 +61,9 @@ class DBAPI:
 
         line = "SELECT * FROM " + table + filters + non_eq_filters + search + order_by + ";"
         args = [value for _, value in e_where.items()]
+
+        if test:
+            print(line, args)
 
         try:
             self.cur.execute(line, args)

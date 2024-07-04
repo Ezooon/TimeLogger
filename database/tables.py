@@ -44,6 +44,17 @@ class Entries(DBTable):
         "content": "",
     }
 
+    def get_items(self, search_params=None, order_by="timestamp", where=None, tags_in=None, tags_out=None, **e_where):
+        if tags_in:
+            id_tuples = db_api.read("entries_tags", test=True, where=[("tag_id", "in", db_tuple(tags_in))])
+            where.append(("id", "in", db_tuple(i_tup[0] for i_tup in id_tuples)))
+
+        if tags_out:
+            id_tuples = db_api.read("entries_tags", test=True, where=[("tag_id", "in", db_tuple(tags_out))])
+            where.append(("id", "not in", db_tuple(i_tup[0] for i_tup in id_tuples)))
+
+        return super().get_items(search_params, order_by, where, test=True, **e_where)
+
     def check_values(self, raw_values):
         if "timestamp" in raw_values:
             raw_values['timestamp'] = datetime.fromisoformat(raw_values['timestamp'])

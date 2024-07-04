@@ -1,6 +1,6 @@
 from PIL import ImageGrab
 from os.path import join, exists
-from database import Entry, wrap_dt, am_pm
+from database import Entry, wrap_dt, am_pm, db_api
 from datetime import datetime
 from keyboard import write
 
@@ -34,7 +34,7 @@ while True:
     attachments, content = tags_entry(content, "**")
     last_tags += (" " + " ".join(more_tags))
     if not content:
-        exit()
+        break
 
     if "clp" in attachments:
         im = ImageGrab.grabclipboard()
@@ -49,3 +49,5 @@ while True:
     Entry(tags=list(set(tags + more_tags)), content=content, attachments=attachments).save()
     # print("tags:", tags, "more tags:", more_tags, "content:", content, "attachments:", attachments)
     print()
+
+db_api.close()
