@@ -55,7 +55,7 @@ Attachment.table = Attachment().table
 class Entries(DBTable):
     default_values = {
         "id": 0,
-        "timestamp": datetime.now().replace(microsecond=0),
+        "timestamp": None,
         "content": "",
     }
 
@@ -92,6 +92,12 @@ class Entry(Item):
         self.current_tags = tags or map(str, self.tags)
         self.current_attachments = set(Attachment(path=att, entry_id=self.id) for att in attachments) or self.attachments
 
+    def new_attachments(self, attachments):
+        """a way to change the entry's attachments"""
+
+        self.current_attachments = set(
+            Attachment(path=att, entry_id=self.id) for att in attachments) or self.attachments
+
     def get_tags(self):
         tag_ids = tuple(entry_tag[1] for entry_tag in db_api.read("entries_tags", entry_id=self.id))
         return set(Tag().table.get_items(where=[('id', "in", db_tuple(tag_ids))]))
@@ -101,15 +107,16 @@ class Entry(Item):
         return attachments
 
     def validate(self, fields_values):
-        fields_values["timestamp"] = datetime.now().replace(microsecond=0)
+        if not self.timestamp:
+            fields_values["timestamp"] = datetime.now().replace(microsecond=0)
         return fields_values
 
     def save_tags(self):
-        tag_list = self.tags
-        new_tag_list = set(map(Tag.add_or_get_tag, self.current_tags))
+        tag_list = set(map(str, self.tags))
+        new_tag_list = set(self.current_tags)
         # new_tag_list = set(map(Tag.add_or_get_tag, filter(bool, self.current_tags)))
-        to_add = new_tag_list - tag_list
-        to_delete = tag_list - new_tag_list
+        to_add = set(map(Tag.add_or_get_tag, (new_tag_list - tag_list)))
+        to_delete = set(map(Tag.add_or_get_tag, (tag_list - new_tag_list)))
         for tag in to_add:
             db_api.create("entries_tags", entry_id=self.id, tag_id=tag.id)
         for tag in to_delete:
@@ -125,7 +132,7 @@ class Entry(Item):
             attachment.entry_id = self.id
             attachment.save()
         for attachment in to_delete:
-            attachment.delete(entry_id=self.id, path=attachment)
+            attachment.delete()
 
     def on_saved(self):
         self.save_tags()

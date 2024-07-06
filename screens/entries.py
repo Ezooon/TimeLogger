@@ -29,6 +29,8 @@ class EntriesScreen(MDBottomNavigationItem):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.editing_entry = None
+
         self.re_add_tags = []
 
         self.date_dialog = MDDatePicker()
@@ -84,10 +86,10 @@ class EntriesScreen(MDBottomNavigationItem):
                 on_press=on_press,
                 tag_color="#44444499"))
 
-    def load_entries(self, **kwargs):
+    def load_entries(self, search_params=dict(), where=[], **kwargs):
         entries = Entry.table.get_items(
-            search_params={"content": self.ids.search_field.text},
-            where=[
+            search_params={"content": self.ids.search_field.text, **search_params},
+            where=where + [
                     ("timestamp", ">", wrap_dt(self.from_date)),
                     ("timestamp", "<", wrap_dt(self.to_date)),
                   ],
@@ -207,10 +209,39 @@ class EntriesScreen(MDBottomNavigationItem):
         content = self.ids.edit_field.text
         tags = [tc.text for tc in self.ids.tag_box.children]
         attachments = [att.attachment.path for att in self.ids.attachment_box.children]
+        if not self.editing_entry:
+            Entry(tags=list(filter(bool, set(tags))), content=content, attachments=attachments).save()
+        else:
+            self.editing_entry.content = content
+            self.editing_entry.current_tags = tags
+            self.editing_entry.new_attachments(attachments)
+            self.editing_entry.save()
 
-        Entry(tags=list(filter(bool, set(tags))), content=content, attachments=attachments).save()
         self.load_entries()
 
+        self.editing_entry = None
         self.ids.edit_field.text = ""
         self.ids.tag_box.clear_widgets()
         self.ids.attachment_box.clear_widgets()
+
+        self.animate_edit_card()
+
+    def edit_past_entry(self, entry):
+        self.animate_edit_card()
+
+        self.editing_entry = entry
+        self.ids.edit_field.text = entry.content
+        self.ids.tag_box.clear_widgets()
+        self.add_tags(entry.tags)
+        self.ids.attachment_box.clear_widgets()
+        self.add_attachments(entry.attachments)
+
+    def add_tags(self, tags):
+        self.ids.tag_box.clear_widgets()
+        for tag in tags:
+            self.ids.tag_box.add_widget(TagChip(tag=tag, on_press=lambda x: x.parent.remove_widget(x)))
+
+    def add_attachments(self, attachments):
+        self.ids.attachment_box.clear_widgets()
+        for attachment in attachments:
+            self.ids.attachment_box.add_widget(AttachmentCard(attachment=attachment))

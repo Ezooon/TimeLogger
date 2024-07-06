@@ -82,7 +82,7 @@ class DBAPI:
 
     def delete(self, table: str, **kwargs):
         self.cur.execute(f"DELETE FROM {table} WHERE " +
-                         ", ".join([f"{key} = ?" for key in kwargs.keys()]) + ";",
+                         " AND ".join([f"{key} = ?" for key in kwargs.keys()]) + ";",
                          [value for _, value in kwargs.items()])
         self.conn.commit()
 
