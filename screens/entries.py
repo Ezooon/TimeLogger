@@ -8,8 +8,8 @@ from kivymd.uix.bottomnavigation import MDBottomNavigationItem
 from kivymd.uix.pickers import MDDatePicker
 from plyer import filechooser
 
-from database import Entry, wrap_dt, Tags, db_tuple, Attachment
-from uix import TagChip, EntryCard, AttachmentCard
+from database import Entry, wrap_dt, Attachment, Tag
+from uix import TagChip, AttachmentCard
 
 Builder.load_file("screens/entries.kv")
 today = date.today()
@@ -45,6 +45,11 @@ class EntriesScreen(MDBottomNavigationItem):
         self.load_tags()
 
     def load_tags(self):
+        self.filter_with = dict()
+        self.filter_out = dict()
+        self.ids.filter_tag_box.clear_widgets()
+        Tag.table.update_all()
+
         def on_press(tagc):
             tag_name = tagc.tag.tag
             # filter out red
@@ -80,7 +85,7 @@ class EntriesScreen(MDBottomNavigationItem):
             if not self.show_filters:
                 self.load_entries()
 
-        for key, tag in Tags.all.items():
+        for key, tag in Tag.table.all.items():
             self.ids.filter_tag_box.add_widget(TagChip(
                 tag=tag,
                 on_press=on_press,

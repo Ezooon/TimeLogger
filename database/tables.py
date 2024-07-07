@@ -9,7 +9,16 @@ class Tags(DBTable):
         "tag": "",
         "color": '2EC7FF',
     }
-    all = {}
+
+    def __init__(self, name="", default_values=None):
+        super().__init__(name, default_values)
+        self.all = dict()
+
+    def update_all(self):
+        self.all = dict()
+        ts = self.get_items()
+        for t in ts:
+            self.all[t.tag] = t
 
 
 class Tag(Item):
@@ -29,12 +38,8 @@ class Tag(Item):
         return self.tag
 
 
-ts = db_api.read('tags')
-for t in ts:
-    Tags.all[t[1]] = Tag(True, id=t[0], tag=t[1], color=t[2])
-
-
 Tag.table = Tag().table  # ToDo fix: I need those here because the table item_cls, find a better way to initialize them.
+Tag.table.update_all()
 
 
 class Attachment(Item):

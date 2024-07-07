@@ -1,2 +1,3 @@
 .idea
-.database/logs.db
+database/logs.db
+socialapi/apikeys.json

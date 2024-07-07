@@ -48,7 +48,6 @@ class EntryCard(MDCard):
 
         def permanent_delete(_):
             if not app.undo:
-                print("deleteing: ", entry)
                 entry.delete()
             else:
                 load()
