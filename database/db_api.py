@@ -1,4 +1,5 @@
 from sqlite3 import connect
+from os.path import abspath, join, split
 
 
 def wrap_dt(timestamp):
@@ -20,7 +21,7 @@ def db_tuple(values, wrapper=""):
     return str(values)
 
 
-db_path = "database/logs.db"
+db_path = join(*split(__file__)[:-1], "logs.db")
 
 
 class DBAPI:
