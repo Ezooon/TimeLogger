@@ -150,3 +150,5 @@ class Entry(Item):
 
 Entry.table = Entry().table
 
+
+# ToDo have the posts table include fields to reference the entries used to generate it.
