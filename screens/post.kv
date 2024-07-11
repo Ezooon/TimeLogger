@@ -1,4 +1,45 @@
 <PostScreen>:
-    MDLabel:
-        text: "NOT IMPLEMENTED!"
-        halign: "center"
+    padding: dp(10)
+    MDBoxLayout:
+        id: toolbar
+        orientation: "vertical"
+        MDBoxLayout:
+            md_bg_color: self.theme_cls.bg_light
+            size_hint: 1, None
+            padding: dp(10), dp(5), dp(10), 0
+            height: dp(60)
+            MDTextField:
+                id: search_field
+                icon_left: "magnify"
+                pos_hint: {"top": 1}
+                on_focus:
+                    if not self.focus: root.load_posts()
+
+        MDBoxLayout:
+            md_bg_color: self.theme_cls.bg_light
+            size_hint: 1, None
+            height: dp(40)
+            MDFlatButton:
+                id: from_date_picker
+                text: "From: " + str(root.from_date)
+                on_release:
+                    root.show_date_picker(False)
+            MDFlatButton:
+                id: to_date_picker
+                text: "To: " + str(root.to_date.date())
+                on_release:
+                    root.show_date_picker()
+            Widget:
+                id: filter_tag_box_container_placeholder
+
+        MDRecycleView:
+            id: sv
+            data: root.view_data
+            key_viewclass: "viewclass"
+            MDRecycleGridLayout:
+                id: items_grid
+                adaptive_height: True
+                size_hint: 1, None
+                cols: 1
+                padding: dp(10), dp(10), dp(10), dp(50)
+                spacing: dp(5)

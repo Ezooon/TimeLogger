@@ -27,6 +27,8 @@ class EntriesScreen(MDBottomNavigationItem):
     from_date = ObjectProperty(date.today())
     to_date = ObjectProperty(datetime.today().replace(hour=23, minute=59, second=59, microsecond=0))
 
+    # excluded_entries = ListProperty([])
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.editing_entry = None

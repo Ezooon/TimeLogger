@@ -1,0 +1,72 @@
+#:import dtstr utils.dtstr
+
+<PostCard>:
+    md_bg_color: self.theme_cls.bg_dark[:3] + [0.5]
+    orientation: "vertical"
+    adaptive_height: True
+    spacing: 0
+    MDBoxLayout:
+        size_hint: None, None
+        size: root.width, dp(20)
+        padding: dp(5), dp(5), dp(15), dp(5)
+        spacing: dp(10)
+        MDLabel:
+            id: timestamp
+            text: dtstr(root.timestamp)
+            adaptive_height: True
+            font_style: "Caption"
+            pos_hint: {"top": 1}
+        MDIcon:
+            icon: "linkedin"
+            color: 0.7, 0.7, 1, 1
+            font_size: sp(17)
+            pos_hint: {"center_y": 0.5}
+        MDIcon:
+            icon: "twitter"
+            color: 0.3, 0.3, 1, 1
+            font_size: sp(17)
+            pos_hint: {"center_y": 0.5}
+        MDIcon:
+            icon: "facebook"
+            color: 0, 0, 1, 1
+            font_size: sp(17)
+            pos_hint: {"center_y": 0.5}
+
+    MDSeparator:
+
+    MDLabel:
+        padding: dp(10)
+        text: root.content
+        adaptive_height: True
+        width: root.width
+        font_size: sp(15)
+        md_bg_color: self.theme_cls.bg_dark
+
+    MDStackLayout:
+        id: attachment_box
+        orientation: "lr-tb"
+        adaptive_height: True
+        width: root.width
+        pos_hint: {'center_y': 0.5}
+        spacing: dp(5), dp(5)
+        padding: dp(10), 0, dp(10), dp(5)
+        md_bg_color: self.theme_cls.bg_dark
+
+    MDSeparator:
+
+    MDBoxLayout:
+        id: option_box
+        size_hint: 1, None
+        pos_hint: {"right": 1, 'center_y': 0.5}
+        size: dp(90), dp(30)
+        spacing: dp(2)
+        MDIconButton:
+            icon: "send"
+            icon_size: sp(18)
+            size_hint: 1, 1
+            on_release: root.send()
+        MDIconButton:
+            icon: "trash-can-outline"
+            icon_size: sp(18)
+            size_hint: 1, 1
+            on_release: root.delete()

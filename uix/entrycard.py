@@ -1,7 +1,7 @@
 from kivy.lang import Builder
 from datetime import datetime
 from kivymd.uix.card import MDCard
-from kivy.properties import ObjectProperty, StringProperty, ListProperty
+from kivy.properties import ObjectProperty, StringProperty, ListProperty, BooleanProperty
 from kivy.clock import Clock
 from kivy.app import App
 
@@ -19,11 +19,21 @@ class EntryCard(MDCard):
     tags = ListProperty([])
     attachments = ListProperty([])
 
+    # excluded = BooleanProperty(False)
+
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(args, kwargs)
+    #     app = App.get_running_app()
+    #     app.root.ids.entries_screen.bind(excluded_entries=self.is_excluded)
+
     def on_entry(self, _, entry):
         self.content = entry.content
         self.timestamp = entry.timestamp
         self.tags = entry.tags
         self.attachments = entry.attachments
+
+        # app = App.get_running_app()
+        # self.is_excluded(None, app.root.ids.entries_screen.excluded_entries)
 
     def on_tags(self, _, tags):
         self.ids.tag_box.clear_widgets()
@@ -34,6 +44,16 @@ class EntryCard(MDCard):
         self.ids.attachment_box.clear_widgets()
         for attachment in attachments:
             self.ids.attachment_box.add_widget(AttachmentCard(attachment=attachment))
+
+    def is_excluded(self, _, entries):
+        if self in entries:
+            self.excluded = True
+        else:
+            self.excluded = False
+
+    def exclude(self):
+        app = App.get_running_app()
+        app.root.ids.entries_screen.excluded_entries.append(self)
 
     def edit(self):
         app = App.get_running_app()
