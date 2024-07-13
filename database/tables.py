@@ -147,8 +147,81 @@ class Entry(Item):
         tags = [str(tag) for tag in self.current_tags]
         return f"\t{am_pm(self.timestamp)}: {' '.join(tags)}\n\t\t{self.content}"
 
+    def __str__(self):
+        tags = [str(tag) for tag in self.current_tags]
+        return f"\t{self.timestamp}: {' '.join(tags)}\n\t\t{self.content}"
+
 
 Entry.table = Entry().table
+
+
+class Posts(DBTable):
+    default_values = {
+        "id": 0,
+        "timestamp": None,
+        "content": "",
+        "linkedin": False,
+        "twitter": False,
+        "facebook": False,
+    }
+
+    def get_items(self, search_params=None, order_by="timestamp", where=None, **e_where):
+        return super().get_items(search_params, order_by, where, **e_where)
+
+    def check_values(self, raw_values):
+        if "timestamp" in raw_values:
+            raw_values['timestamp'] = datetime.fromisoformat(raw_values['timestamp'])
+        return raw_values
+
+
+class Post(Item):
+    table = Posts()
+
+    def __init__(self, in_db=False, attachments=set(), **fields):
+        super().__init__(in_db, **fields)
+
+        if self.in_db:
+            self.attachments = self.get_attachments()
+        else:
+            self.attachments = set()
+
+        self.current_attachments = set(Attachment(path=att, entry_id=self.id) for att in attachments) or self.attachments
+
+    def new_attachments(self, attachments):
+        """a way to change the entry's attachments"""
+
+        self.current_attachments = set(
+            Attachment(path=att, entry_id=self.id) for att in attachments) or self.attachments
+
+    def get_attachments(self):
+        attachments = Attachment.table.get_items(entry_id=self.id)
+        return attachments
+
+    def validate(self, fields_values):
+        if not self.timestamp:
+            fields_values["timestamp"] = datetime.now().replace(microsecond=0)
+        return fields_values
+
+    def save_attachments(self):
+        attachment_list = set(self.attachments)
+        new_attachment_list = set(self.current_attachments)
+        to_add = new_attachment_list - attachment_list
+        to_delete = attachment_list - new_attachment_list
+
+        for attachment in to_add:
+            attachment.entry_id = self.id
+            attachment.save()
+        for attachment in to_delete:
+            attachment.delete()
+
+    def on_saved(self):
+        self.save_attachments()
+
+    def __repr__(self):
+        return f"\t{am_pm(self.timestamp)}:\n\t\t{self.content}"
+
+
+Post.table = Post().table
 
 
 # ToDo have the posts table include fields to reference the entries used to generate it.

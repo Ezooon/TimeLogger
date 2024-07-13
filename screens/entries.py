@@ -8,7 +8,7 @@ from kivymd.uix.bottomnavigation import MDBottomNavigationItem
 from kivymd.uix.pickers import MDDatePicker
 from plyer import filechooser
 
-from database import Entry, wrap_dt, Attachment, Tag
+from database import Entry, Post, wrap_dt, Attachment, Tag
 from uix import TagChip, AttachmentCard
 
 Builder.load_file("screens/entries.kv")
@@ -31,6 +31,7 @@ class EntriesScreen(MDBottomNavigationItem):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.editing_post = None
         self.editing_entry = None
 
         self.re_add_tags = []
@@ -232,6 +233,28 @@ class EntriesScreen(MDBottomNavigationItem):
         self.ids.attachment_box.clear_widgets()
 
         self.animate_edit_card()
+
+    def save_post(self):
+        # print(dir(self.parent))
+        content = self.ids.edit_field.text
+        attachments = [att.attachment.path for att in self.ids.attachment_box.children]
+        if not self.editing_post:
+            Post(content=content, attachments=attachments).save()
+        else:
+            self.editing_post.content = content
+            self.editing_post.new_attachments(attachments)
+            self.editing_post.save()
+
+        self.load_entries()
+
+        self.editing_post = None
+        self.ids.edit_field.text = ""
+        self.ids.attachment_box.clear_widgets()
+        self.animate_edit_card()
+
+        posts_screen = self.parent.get_screen("posts_screen")
+        posts_screen.load_posts()
+        self.parent.switch_to(posts_screen)
 
     def edit_past_entry(self, entry):
         self.animate_edit_card()

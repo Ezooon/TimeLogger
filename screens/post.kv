@@ -43,3 +43,12 @@
                 cols: 1
                 padding: dp(10), dp(10), dp(10), dp(50)
                 spacing: dp(5)
+
+    MDIconButton:
+        id: gen_button
+        icon: "creation-outline"
+        md_bg_color: self.theme_cls.primary_color
+        y: dp(10)
+        right: root.right - dp(10)
+        on_release: root.generate_dialog.open()
+

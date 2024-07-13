@@ -27,7 +27,7 @@ def tags_entry(content: str, scape_char="%%"):
 today_logs = Entry().table.get_items(where=[("timestamp", ">=", wrap_dt(datetime.today().date()))])
 print(str(datetime.today().date()) + ": \n")
 for log in today_logs:
-    print(log, "\n")
+    print(repr(log), "\n")
 
 last_tags = ""
 while True:

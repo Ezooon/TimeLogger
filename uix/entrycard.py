@@ -51,9 +51,9 @@ class EntryCard(MDCard):
         else:
             self.excluded = False
 
-    def exclude(self):
-        app = App.get_running_app()
-        app.root.ids.entries_screen.excluded_entries.append(self)
+    # def exclude(self):
+    #     app = App.get_running_app()
+    #     app.root.ids.entries_screen.excluded_entries.append(self)
 
     def edit(self):
         app = App.get_running_app()

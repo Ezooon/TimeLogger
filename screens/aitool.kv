@@ -1,4 +1,52 @@
+#:import MessageCard uix.MessageCard
+
 <AiToolScreen>:
-    MDLabel:
-        text: "NOT IMPLEMENTED!"
-        halign: "center"
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: 0, 0, 0, 5
+        MDScrollView:
+            MDGridLayout:
+                id: messages
+                cols: 1
+                adaptive_height: True
+                padding: dp(10)
+                spacing: dp(10)
+                MessageCard:
+                    sender: "LLaMA 3"
+                    content: "How can I help you?"
+
+        MDCard:
+            id: prompt_card
+            size_hint: 0.99, None
+            height: prompt_field.height + dp(3)
+            padding: dp(5)
+            spacing: dp(5)
+            pos_hint: {'center_x': 0.5}
+            radius: dp(16)
+            md_bg_color: "#444444"
+            orientation: "vertical"
+            MDBoxLayout:
+                adaptive_height: True
+                size_hint: 1, 0
+                pos_hint: {'center_y': 0.5}
+                MDTextField:
+                    id: prompt_field
+                    mode: "rectangle"
+                    hint_text: "You"
+                    multiline: True
+                    pos_hint: {'center_y': 0.5}
+                MDBoxLayout:
+                    pos_hint: {'center_y': 0.45}
+                    adaptive_size: True
+                    orientation: "vertical" if prompt_field.height > dp(80) else "horizontal"
+                    MDIconButton:
+                        icon: "send"
+                        icon_size: dp(20)
+                        on_release:
+                            if prompt_field.text: root.send(prompt_field)
+                            if prompt_field.text: prompt_field.text = ""
+                    MDIconButton:
+                        icon: "clipboard-outline"
+                        icon_size: dp(20)
+                        on_release:
+                            prompt_field.paste()

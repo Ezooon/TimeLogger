@@ -1,13 +1,23 @@
+import json
+import threading
 from datetime import date, datetime
 
-from kivy.clock import Clock
+from kivy.app import App
+from kivy.clock import Clock, mainthread
 from kivy.lang import Builder
 from kivy.properties import ListProperty, BooleanProperty, ObjectProperty
+from kivymd.toast import toast
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
+from kivymd.uix.button import MDFlatButton
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.pickers import MDDatePicker
-from uix import PostCard
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.textfield import MDTextField
 
-from database import Entry, wrap_dt
+from uix import PostCard
+from aitool import generate
+
+from database import Post, wrap_dt
 
 Builder.load_file("screens/post.kv")
 today = datetime.today()
@@ -23,6 +33,62 @@ class PostScreen(MDBottomNavigationItem):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.generate_dialog = MDDialog(
+            title="Generate New Post",
+            type="custom",
+            content_cls=MDBoxLayout(
+                orientation="vertical",
+                size_hint=(1, None),
+                adaptive_height=True
+            ),
+            buttons=[
+                MDFlatButton(
+                    text="Cancel",
+                    on_release=lambda _: self.generate_dialog.dismiss()
+                ),
+                MDFlatButton(
+                    text="Generate",
+                    theme_text_color="Custom",
+                    text_color=self.theme_cls.primary_color,
+                    on_release=lambda _: self.start_generating()
+                ),
+            ],
+        )
+        self.gen_num_field = MDTextField(
+            hint_text="Number of Posts",
+            input_filter="int",
+            text="1",
+            required=True
+        )
+        self.generate_dialog.content_cls.add_widget(self.gen_num_field)
+        self.gen_area_field = MDTextField(
+            hint_text="Area or Niche",
+            text="Daily live",
+            required=True
+        )
+        self.generate_dialog.content_cls.add_widget(self.gen_area_field)
+        self.gen_tone_field = MDTextField(
+            hint_text="Tone",
+            text="casual",
+            required=True
+        )
+        self.generate_dialog.content_cls.add_widget(self.gen_tone_field)
+        self.gen_theme_field = MDTextField(
+            hint_text="Theme",
+            text="update",
+            required=True,
+            helper_text="e.g. news, update, promotion, etc."
+        )
+        self.generate_dialog.content_cls.add_widget(self.gen_theme_field)
+        self.gen_keywords_field = MDTextField(
+            hint_text="Keywords",
+        )
+        self.generate_dialog.content_cls.add_widget(self.gen_keywords_field)
+        self.gen_hashtags_field = MDTextField(
+            hint_text="Hashtags",
+            text="#from_timelogger"
+        )
+        self.generate_dialog.content_cls.add_widget(self.gen_hashtags_field)
 
         self.re_add_tags = []
 
@@ -34,7 +100,7 @@ class PostScreen(MDBottomNavigationItem):
         self.load_posts()
 
     def load_posts(self, search_params=dict(), where=[], **kwargs):
-        posts = Entry.table.get_items(
+        posts = Post.table.get_items(
             search_params={"content": self.ids.search_field.text, **search_params},
             where=where + [
                     ("timestamp", ">", wrap_dt(self.from_date)),
@@ -73,3 +139,53 @@ class PostScreen(MDBottomNavigationItem):
             self.load_posts()
 
         self.date_dialog.on_save = lambda *args: ok(to, *args)
+
+    def start_generating(self):
+        self.ids.gen_button.icon = "timer-sand"
+
+        num = self.gen_num_field.text
+        area = self.gen_area_field.text
+        tone = self.gen_tone_field.text
+        theme = self.gen_theme_field.text
+        if not all([num, area, tone, theme]):
+            return
+
+        keywords = self.gen_keywords_field
+        hashtags = self.gen_hashtags_field
+
+        app = App.get_running_app()
+        entries = [entry_card["entry"] for entry_card in app.root.ids.entries_screen.view_data]
+
+        threading.Thread(
+            target=generate,
+            args=(entries, num, area, tone, theme, keywords, hashtags, self.add_posts, self.generation_failure)
+        ).start()
+        self.generate_dialog.dismiss()
+
+    @mainthread
+    def add_posts(self, posts_json: str):
+        self.ids.gen_button.icon = "creation-outline"
+        print(posts_json)
+        posts = json.loads(posts_json)
+
+        for post in posts:
+            Post(content=post["content"], attachments=post["suggested_images"]).save()
+
+        self.load_posts()
+
+    def edit_post(self, post):
+        entries_screen = self.parent.get_screen("entries_screen")
+        entries_screen.entry_edit = False
+        entries_screen.editing_post = post
+        entries_screen.ids.edit_field.text = post.content
+        entries_screen.ids.tag_box.clear_widgets()
+        entries_screen.ids.attachment_box.clear_widgets()
+        entries_screen.add_attachments(post.attachments)
+
+        self.parent.switch_to(entries_screen)
+        Clock.schedule_once(lambda _: entries_screen.animate_edit_card(), 0)
+
+    def generation_failure(self, excep):
+        Clock.schedule_once(lambda x: toast("couldn't generate posts"), 0)
+        self.ids.gen_button.icon = "creation-outline"
+

@@ -1,0 +1,30 @@
+<MessageCard>:
+    md_bg_color: self.theme_cls.bg_dark[:3] + [0.5]
+    orientation: "vertical"
+    adaptive_height: True
+    size_hint_y: None
+    MDBoxLayout:
+        size_hint: None, None
+        size: root.width, dp(40)
+        padding: dp(5), dp(5), dp(15), dp(5)
+        spacing: dp(10)
+        MDLabel:
+            text: root.sender
+            adaptive_height: True
+#            font_style: "Caption"
+            pos_hint: {"center_y": 0.5}
+        MDIconButton:
+            icon: "content-copy"
+            size_hint_y: 1
+            color: 0.7, 0.7, 1, 1
+            icon_size: sp(17)
+            pos_hint: {"center_y": 0.5}
+            on_release: print(root.content)
+
+    MDSeparator:
+    MDLabel:
+        padding: dp(20)
+        size_hint_x: 1
+        text: root.content
+        adaptive_height: True
+        md_bg_color: self.theme_cls.bg_dark

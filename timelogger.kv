@@ -6,19 +6,21 @@
     MDScreen:
         name: "home"
         MDBottomNavigation:
-#            use_text: False
+            id: bottom_nav
+            use_text: True
             height: dp(30)
-            PostScreen:
-                id: posts_screen
-                icon: "post"
-                text: "Posts"
-                name: "posts_screen"
             EntriesScreen:
                 id: entries_screen
                 icon: "history"
                 text: "Entries"
                 name: "entries_screen"
+            PostScreen:
+                id: posts_screen
+                icon: "post"
+                text: "Posts"
+                name: "posts_screen"
             AiToolScreen:
+                id: ai_tool_screen
                 icon: "robot-excited-outline"
                 text: "Ai Tool"
                 name: "ai_tool_screen"

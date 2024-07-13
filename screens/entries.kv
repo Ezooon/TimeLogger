@@ -126,6 +126,7 @@
                     icon_size: dp(20)
                     on_release:
                         if root.entry_edit: root.save_entry()
+                        if not root.entry_edit: root.save_post()
                 MDIconButton:
                     icon: "attachment-plus"
                     icon_size: dp(20)

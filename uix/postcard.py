@@ -31,6 +31,10 @@ class PostCard(MDCard):
     def send(self):
         pass
 
+    def edit(self):
+        app = App.get_running_app()
+        app.root.ids.posts_screen.edit_post(self.post)
+
     def delete(self):
         app = App.get_running_app()
         load = app.root.ids.posts_screen.load_posts
