@@ -140,7 +140,7 @@ class EntriesScreen(MDBottomNavigationItem):
     def animate_edit_card(self):
         y = self.ids.edit_card.y
         h = self.ids.edit_card.height
-        Animation(y=0 if y < 0 else -h, d=0.2).start(self.ids.edit_card)
+        Animation(y=5 if y < 5 else -h, d=0.2).start(self.ids.edit_card)
 
     def on_show_filters(self, _, show):
         if show:

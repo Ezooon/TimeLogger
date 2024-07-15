@@ -57,13 +57,13 @@ class PostScreen(MDBottomNavigationItem):
         self.gen_num_field = MDTextField(
             hint_text="Number of Posts",
             input_filter="int",
-            text="1",
+            text="2",
             required=True
         )
         self.generate_dialog.content_cls.add_widget(self.gen_num_field)
         self.gen_area_field = MDTextField(
             hint_text="Area or Niche",
-            text="Daily live",
+            text="Dev Logs",
             required=True
         )
         self.generate_dialog.content_cls.add_widget(self.gen_area_field)
@@ -165,11 +165,11 @@ class PostScreen(MDBottomNavigationItem):
     @mainthread
     def add_posts(self, posts_json: str):
         self.ids.gen_button.icon = "creation-outline"
-        print(posts_json)
+        print(posts_json, dir(posts_json))
         posts = json.loads(posts_json)
 
         for post in posts:
-            Post(content=post["content"], attachments=post["suggested_images"]).save()
+            Post(content=post["content"], attachments=post["suggested images"]).save()
 
         self.load_posts()
 

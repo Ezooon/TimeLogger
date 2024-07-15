@@ -22,7 +22,7 @@ class EntryCard(MDCard):
     # excluded = BooleanProperty(False)
 
     # def __init__(self, *args, **kwargs):
-    #     super().__init__(args, kwargs)
+    #     super().__init__(args, **kwargs)
     #     app = App.get_running_app()
     #     app.root.ids.entries_screen.bind(excluded_entries=self.is_excluded)
 

@@ -1,5 +1,4 @@
 from kivymd.app import MDApp
-from kivy.core.window import Window
 from kivy.properties import BooleanProperty
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screenmanager import MDScreenManager
@@ -23,7 +22,7 @@ class TimeLogger(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Amber"
         self.theme_cls.accent_palette = "Red"
-        # self.theme_cls.material_style = "M2"
+        self.theme_cls.material_style = "M2"
 
         self.setup_undo_snakbar()
         return SM()

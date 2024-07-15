@@ -1,20 +1,11 @@
 import json
+from aitool import client
 from database import Entry
 
-entries = Entry.table.get_items()
-
-from groq import Groq
-
-with open("./aitool/keys.json", 'r') as f:
-    keys = json.load(f)
-
-client = Groq(
-    api_key=keys["GROQ_API_KEY"],
-)
 
 schema = {
     "content": "the tweet's body",
-    "suggested_images": [
+    "suggested images": [
         "a description of a relevant image the user can attach to boost engagement",
         "..."
     ],
@@ -51,7 +42,7 @@ def generate(entries,
                 {
                     "role": "system",
                     "content": f"You summaraize user's entries to generate Twitter only {num} post{'s' if num != 1 else ''}.\n"
-                               f"\n You respond in json objects following this schema: {json.dumps(schema, indent=2)}"
+                               f"\n You respond in no more than json script following this schema: [{json.dumps(schema, indent=4)}]"
                 },
                 {
                     "role": "user",
@@ -62,7 +53,7 @@ def generate(entries,
                     "content": params,
                 }
             ],
-            model="llama3-70b-8192",
+            model="mixtral-8x7b-32768",
             # response_format={"type": "json_object"},
 
             # Controls randomness: lowering results in less random completions.
@@ -72,7 +63,6 @@ def generate(entries,
         )
     except Exception as e:
         on_failure(e)
-        # return
+        return
 
-    # callback(chat_completion.choices[0].message.content)
-    callback(f"[{json.dumps(schema, indent=2)}]")
+    callback(chat_completion.choices[0].message.content)

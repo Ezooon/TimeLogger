@@ -12,7 +12,7 @@
                 padding: dp(10)
                 spacing: dp(10)
                 MessageCard:
-                    sender: "LLaMA 3"
+                    sender: "BOT"
                     content: "How can I help you?"
 
         MDCard:
@@ -23,7 +23,7 @@
             spacing: dp(5)
             pos_hint: {'center_x': 0.5}
             radius: dp(16)
-            md_bg_color: "#444444"
+            md_bg_color: list(map(lambda x: x+0.1, self.theme_cls.bg_dark))
             orientation: "vertical"
             MDBoxLayout:
                 adaptive_height: True

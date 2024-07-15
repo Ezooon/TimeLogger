@@ -1,40 +1,37 @@
-import os
-
-from groq import Groq
-
-client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY"),
-)
+from aitool import client
 
 
-def send(entries, prompt, previous_messages=[]):
+def send(entries, prompt, previous_messages=[], on_successes=lambda x: None, on_failure=lambda x: None):
     entries_text = "\n\n".join(map(str, entries))
     previous_messages_text = "\n\n".join(map(str, previous_messages))
+    try:
+        complation = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You give the user helpful responses using entries from their history"
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
+                },
+                {
+                    "role": "assistant",
+                    "content": f"User entries: \n{entries_text}",
+                },
+                {
+                    "role": "assistant",
+                    "content": f"chat history: \n{previous_messages_text}",
+                },
+            ],
+            model="llama3-70b-8192",
+            temperature=0.4
+            # Controls randomness: lowering results in less random completions.
+            # As the temperature approaches zero, the model will become deterministic
+            # and repetitive.
 
-    stream = client.chat.completions.create(
-        messages=[
-            {
-                "role": "system",
-                "content": "You give the user helpful responses using entries from their history"
-            },
-            {
-                "role": "user",
-                "content": prompt,
-            },
-            {
-                "role": "assistant",
-                "content": f"These are the entries: \n{entries_text}",
-            },
-            {
-                "role": "assistant",
-                "content": f"Here is the chat history: \n{previous_messages_text}",
-            },
-        ],
-        model="llama3-8b-8192",
-        # Controls randomness: lowering results in less random completions.
-        # As the temperature approaches zero, the model will become deterministic
-        # and repetitive.
-        stream=True
-    )
-
-print(send())
+            # stream=True
+        )
+        on_successes(complation.choices[0].message.content)
+    except Exception as e:
+        on_failure(e)

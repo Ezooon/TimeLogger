@@ -11,15 +11,15 @@
         MDLabel:
             text: root.sender
             adaptive_height: True
-#            font_style: "Caption"
             pos_hint: {"center_y": 0.5}
         MDIconButton:
             icon: "content-copy"
+            allow_selection: True
             size_hint_y: 1
             color: 0.7, 0.7, 1, 1
             icon_size: sp(17)
             pos_hint: {"center_y": 0.5}
-            on_release: print(root.content)
+            on_release: root.copy()
 
     MDSeparator:
     MDLabel:

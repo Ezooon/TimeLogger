@@ -18,17 +18,17 @@
             pos_hint: {"top": 1}
         MDIcon:
             icon: "linkedin"
-            color: 0.7, 0.7, 1, 1
+            color: self.disabled_color if not root.linkedin else (0.7, 0.7, 1, 1)
             font_size: sp(17)
             pos_hint: {"center_y": 0.5}
         MDIcon:
             icon: "twitter"
-            color: 0.3, 0.3, 1, 1
+            color: self.disabled_color if not root.twitter else (0.3, 0.3, 1, 1)
             font_size: sp(17)
             pos_hint: {"center_y": 0.5}
         MDIcon:
             icon: "facebook"
-            color: 0, 0, 1, 1
+            color: self.disabled_color if not root.facebook else (0, 0, 1, 1)
             font_size: sp(17)
             pos_hint: {"center_y": 0.5}
 
@@ -61,17 +61,18 @@
         size: dp(90), dp(30)
         spacing: dp(2)
         MDIconButton:
-            icon: "send"
+            icon: "trash-can-outline"
             icon_size: sp(18)
             size_hint: 1, 1
-            on_release: root.send()
+            on_release: root.delete()
         MDIconButton:
             icon: "pencil"
             icon_size: sp(18)
             size_hint: 1, 1
             on_release: root.edit()
         MDIconButton:
-            icon: "trash-can-outline"
+            icon: "send"
             icon_size: sp(18)
             size_hint: 1, 1
-            on_release: root.delete()
+            on_release:
+                root.open_post_dialog()
