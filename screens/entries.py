@@ -27,8 +27,6 @@ class EntriesScreen(MDBottomNavigationItem):
     from_date = ObjectProperty(date.today())
     to_date = ObjectProperty(datetime.today().replace(hour=23, minute=59, second=59, microsecond=0))
 
-    # excluded_entries = ListProperty([])
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.editing_post = None
@@ -113,6 +111,7 @@ class EntriesScreen(MDBottomNavigationItem):
         } for entry in entries]
 
         self.ids.sv.scroll_y = 0
+        Clock.schedule_once(self.ids.sv.refresh_from_data, 0)
 
     def show_date_picker(self, to=True):
         if to:

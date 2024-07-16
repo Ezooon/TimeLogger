@@ -116,6 +116,7 @@ class PostScreen(MDBottomNavigationItem):
         } for post in posts]
 
         self.ids.sv.scroll_y = 0
+        Clock.schedule_once(self.ids.sv.refresh_from_data, 0)
 
     def show_date_picker(self, to=True):
         if to:

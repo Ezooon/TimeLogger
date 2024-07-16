@@ -1,13 +1,14 @@
-#:import EntriesScreen screens.EntriesScreen
 #:import PostScreen screens.PostScreen
 #:import AiToolScreen screens.AiToolScreen
+#:import EntriesScreen screens.EntriesScreen
+#:import PreferencesScreen screens.PreferencesScreen
 
 <SM>:
     MDScreen:
         name: "home"
         MDBottomNavigation:
             id: bottom_nav
-            use_text: True
+            use_text: False
             height: dp(30)
             EntriesScreen:
                 id: entries_screen
@@ -27,3 +28,9 @@
                 icon: "robot-excited-outline"
                 text: "Ai Tool"
                 name: "ai_tool_screen"
+            PreferencesScreen:
+                id: preferences_screen
+                md_bg_color: self.theme_cls.opposite_bg_darkest[:3] + [0.2]
+                icon: "account-box-outline"
+                text: "Preferences"
+                name: "preferences_screen"

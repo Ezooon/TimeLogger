@@ -1,0 +1,65 @@
+<PreferencesScreen>:
+
+    MDBoxLayout:
+        orientation: "vertical"
+        MDSeparator:
+        MDBoxLayout:
+            padding: dp(10)
+            size_hint: 1, None
+            height: dp(70)
+            MDLabel:
+                text: "Facebook"
+                color: self.theme_cls.primary_color
+                theme_text_color: "Primary"
+            MDFlatButton:
+                text: "login" if not app.facebook else "logout"
+                pos_hint: {"center_y": 0.5}
+                text_color: self.theme_cls.accent_color
+                theme_text_color: "Custom"
+                ripple_behavior: False
+        MDSeparator:
+        MDBoxLayout:
+            padding: dp(10)
+            size_hint: 1, None
+            height: dp(70)
+            MDLabel:
+                text: "Twitter/X"
+                color: self.theme_cls.primary_color
+                theme_text_color: "Primary"
+            MDFlatButton:
+                text: "login" if not app.twitter else "logout"
+                pos_hint: {"center_y": 0.5}
+                text_color: self.theme_cls.accent_color
+                theme_text_color: "Custom"
+                ripple_behavior: False
+        MDSeparator:
+        MDBoxLayout:
+            padding: dp(10)
+            size_hint: 1, None
+            height: dp(70)
+            MDLabel:
+                text: "LinkedIn"
+                color: self.theme_cls.primary_color
+                theme_text_color: "Primary"
+            MDFlatButton:
+                text: "login" if not app.linkedin else "logout"
+                pos_hint: {"center_y": 0.5}
+                text_color: self.theme_cls.accent_color
+                theme_text_color: "Custom"
+                ripple_behavior: False
+        MDSeparator:
+        MDBoxLayout:
+            padding: dp(10), dp(10), dp(30), dp(10)
+            size_hint: 1, None
+            height: dp(70)
+            MDLabel:
+                text: "Dark Theme"
+                color: self.theme_cls.primary_color
+                theme_text_color: "Primary"
+            MDSwitch:
+                active: True
+                on_active:
+                    root.change_theme_style(self.active)
+
+
+        Widget:
