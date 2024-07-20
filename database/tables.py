@@ -149,7 +149,7 @@ class Entry(Item):
 
     def __str__(self):
         tags = [str(tag) for tag in self.current_tags]
-        return f"\t{self.timestamp}: {' '.join(tags)}\n\t\t{self.content}"
+        return f"\t{self.timestamp}: \n\t\t{self.content}" + (f"\n\ttags: {', '.join(tags)}" if tags else '')
 
 
 Entry.table = Entry().table

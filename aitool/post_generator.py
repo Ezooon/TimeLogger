@@ -1,6 +1,5 @@
 import json
 from aitool import client
-from database import Entry
 
 
 schema = {
@@ -17,8 +16,7 @@ def generate(entries,
              area="dev logs",  # Is it related to a specific industry or niche?
              tone="humorous",
              # Do you have any specific tone or style (e.g. formal, informal, humorous, inspirational)?
-             theme="update",
-             # Are there any specific themes or topics you'd like to cover (e.g. news, update, promotion, etc.)?
+             note="",
              keywords=[],  # Are there any specific keywords you'd like to include?
              hashtags=[],  # Are there any specific hashtags you'd like to include?
              callback=print,
@@ -27,8 +25,7 @@ def generate(entries,
     entries_text = "\n\n".join(map(str, entries))
 
     params = f"""
-    the would be {theme} tweets for {area}
-    in a {tone} tone.
+    write {area} tweets, in a {tone} tone.
     do not include any hashtags.
     """
     if keywords:
@@ -36,23 +33,31 @@ def generate(entries,
 
     if hashtags:
         params.replace("do not include any hashtags.", "also include these hashtags: " + str(keywords))
+
+    messages = [
+        {
+            "role": "system",
+            "content": f"You summaraize user's entries and writing style to generate Twitter only {num} post{'s' if num != 1 else ''}.\n"
+                       f"\n You respond in no more than json script following this schema: [{json.dumps(schema, indent=4)}]"
+        },
+        {
+            "role": "assistant",
+            "content": params,
+        },
+        {
+            "role": "user",
+            "content": f"These are my entries: \n{entries_text}",
+        },
+    ]
+    if note:
+        messages.append({
+            "role": "user",
+            "content": f"Note: \n{note}",
+        })
+
     try:
         chat_completion = client.chat.completions.create(
-            messages=[
-                {
-                    "role": "system",
-                    "content": f"You summaraize user's entries to generate Twitter only {num} post{'s' if num != 1 else ''}.\n"
-                               f"\n You respond in no more than json script following this schema: [{json.dumps(schema, indent=4)}]"
-                },
-                {
-                    "role": "user",
-                    "content": f"These are my entries: \n{entries_text}",
-                },
-                {
-                    "role": "assistant",
-                    "content": params,
-                }
-            ],
+            messages=messages,
             model="mixtral-8x7b-32768",
             # response_format={"type": "json_object"},
 

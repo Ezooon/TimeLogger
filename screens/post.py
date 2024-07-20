@@ -73,13 +73,12 @@ class PostScreen(MDBottomNavigationItem):
             required=True
         )
         self.generate_dialog.content_cls.add_widget(self.gen_tone_field)
-        self.gen_theme_field = MDTextField(
-            hint_text="Theme",
-            text="update",
-            required=True,
-            helper_text="e.g. news, update, promotion, etc."
+        self.gen_note_field = MDTextField(
+            hint_text="Note",
+            text="",
+            helper_text="Any thing you want the LLM to consider"
         )
-        self.generate_dialog.content_cls.add_widget(self.gen_theme_field)
+        self.generate_dialog.content_cls.add_widget(self.gen_note_field)
         self.gen_keywords_field = MDTextField(
             hint_text="Keywords",
         )
@@ -147,10 +146,10 @@ class PostScreen(MDBottomNavigationItem):
         num = self.gen_num_field.text
         area = self.gen_area_field.text
         tone = self.gen_tone_field.text
-        theme = self.gen_theme_field.text
-        if not all([num, area, tone, theme]):
+        if not all([num, area, tone]):
             return
 
+        note = self.gen_note_field.text
         keywords = self.gen_keywords_field
         hashtags = self.gen_hashtags_field
 
@@ -159,18 +158,23 @@ class PostScreen(MDBottomNavigationItem):
 
         threading.Thread(
             target=generate,
-            args=(entries, num, area, tone, theme, keywords, hashtags, self.add_posts, self.generation_failure)
+            args=(entries, num, area, tone, note, keywords, hashtags, self.add_posts, self.generation_failure)
         ).start()
         self.generate_dialog.dismiss()
 
     @mainthread
     def add_posts(self, posts_json: str):
         self.ids.gen_button.icon = "creation-outline"
-        print(posts_json, dir(posts_json))
-        posts = json.loads(posts_json)
+        try:
+            posts = json.loads(posts_json)
 
-        for post in posts:
-            Post(content=post["content"], attachments=post["suggested images"]).save()
+            if isinstance(posts, list):
+                for post in posts:
+                    Post(content=post["content"], attachments=post["suggested images"]).save()
+            else:
+                Post(content=posts["content"], attachments=posts["suggested images"]).save()
+        except:
+            toast("AI failure! Try again.")
 
         self.load_posts()
 

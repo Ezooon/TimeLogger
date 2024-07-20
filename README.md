@@ -19,13 +19,14 @@ That, and it will have a chat with an LLM (most likely LLaMa 2) to provide you w
 3. attach files to entries.
 4. search through your entries.
 5. filter entries with date and tags.
+6. Post on X.
+7. LLM chat.
+
 
 #### Under Development
-1. Continuous Logging.
-2. Post on X.
-3. Post on Facebook.
-4. Post on LinkedIn.
-5. LLM chat.
+1. Continuous Logging. 
+2. Post on Facebook.
+3. Post on LinkedIn.
 
 
 ## Usage
@@ -53,8 +54,9 @@ double quotes or without spaces.
 
 ## GUI Application 
 The UI is quit straightforward except for adding tags you'll need to use "%%" in the edit box in order to add them.  
-Also you can't yet add an image from the clipboard.
-![](assets/readme/1.png)
+Also you can't yet add an image from the clipboard.  
+
+![an image for the ui](assets/readme/1.png)
 
 
 

@@ -13,7 +13,6 @@ Builder.load_file("uix/tagchip.kv")
 
 
 class TagChip(RectangularRippleBehavior, ButtonBehavior, MDLabel):
-    # ToDo Add touch behavior and have long presses delete tags form db
     dialog = None
 
     edit_tag = None

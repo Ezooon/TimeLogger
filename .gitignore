@@ -1,3 +1,6 @@
 .idea
 database/logs.db
 socialapi/apikeys.json
+socialapi/keys.data
+user_data.data
+aitool/keys.json

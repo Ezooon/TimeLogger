@@ -14,3 +14,33 @@ class PreferencesScreen(MDBottomNavigationItem):
         app.config.set('Theme', 'style', s)
         app.config.write()
         toast("restart")
+
+    def facebook_login(self):
+        app = App.get_running_app()
+        app.facebook.authorize_login()
+
+    def facebook_logout(self):
+        app = App.get_running_app()
+        app.facebook.logout()
+        app.logged_in_facebook = False
+        app.save_user_data()
+
+    def twitter_login(self):
+        app = App.get_running_app()
+        app.twitter.authorize_login()
+
+    def twitter_logout(self):
+        app = App.get_running_app()
+        app.twitter.logout()
+        app.logged_in_twitter = False
+        app.save_user_data()
+
+    def linkedin_login(self):
+        app = App.get_running_app()
+        app.linkedin.authorize_login()
+
+    def linkedin_logout(self):
+        app = App.get_running_app()
+        app.linkedin.logout()
+        app.logged_in_linkedin = False
+        app.save_user_data()

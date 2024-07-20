@@ -1,3 +1,3 @@
-from .facebook import Facebook
-from .linkedin import LinkedIn
-from .twitter import Twitter
+from .facebook import FacebookAPI
+from .linkedin import LinkedInAPI
+from .twitter import TwitterAPI

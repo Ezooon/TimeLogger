@@ -12,16 +12,16 @@ def send(entries, prompt, previous_messages=[], on_successes=lambda x: None, on_
                     "content": "You give the user helpful responses using entries from their history"
                 },
                 {
-                    "role": "user",
-                    "content": prompt,
-                },
-                {
                     "role": "assistant",
                     "content": f"User entries: \n{entries_text}",
                 },
                 {
                     "role": "assistant",
                     "content": f"chat history: \n{previous_messages_text}",
+                },
+                {
+                    "role": "user",
+                    "content": prompt,
                 },
             ],
             model="llama3-70b-8192",

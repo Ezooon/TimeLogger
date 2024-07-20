@@ -12,11 +12,12 @@
                 color: self.theme_cls.primary_color
                 theme_text_color: "Primary"
             MDFlatButton:
-                text: "login" if not app.facebook else "logout"
+                text: "login" if not app.logged_in_facebook else "logout"
                 pos_hint: {"center_y": 0.5}
                 text_color: self.theme_cls.accent_color
                 theme_text_color: "Custom"
                 ripple_behavior: False
+                on_release: root.facebook_login() if not app.logged_in_facebook else root.facebook_logout()
         MDSeparator:
         MDBoxLayout:
             padding: dp(10)
@@ -27,11 +28,12 @@
                 color: self.theme_cls.primary_color
                 theme_text_color: "Primary"
             MDFlatButton:
-                text: "login" if not app.twitter else "logout"
+                text: "login" if not app.logged_in_twitter else "logout"
                 pos_hint: {"center_y": 0.5}
                 text_color: self.theme_cls.accent_color
                 theme_text_color: "Custom"
                 ripple_behavior: False
+                on_release: root.twitter_login() if not app.logged_in_twitter else root.twitter_logout()
         MDSeparator:
         MDBoxLayout:
             padding: dp(10)
@@ -42,11 +44,12 @@
                 color: self.theme_cls.primary_color
                 theme_text_color: "Primary"
             MDFlatButton:
-                text: "login" if not app.linkedin else "logout"
+                text: "login" if not app.logged_in_linkedin else "logout"
                 pos_hint: {"center_y": 0.5}
                 text_color: self.theme_cls.accent_color
                 theme_text_color: "Custom"
                 ripple_behavior: False
+                on_release: root.linkedin_login() if not app.logged_in_linkedin else root.linkedin_logout()
         MDSeparator:
         MDBoxLayout:
             padding: dp(10), dp(10), dp(30), dp(10)

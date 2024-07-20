@@ -2,7 +2,6 @@ import threading
 
 from kivy.lang import Builder
 from datetime import datetime
-from socialapi import Twitter, LinkedIn, Facebook
 from kivymd.toast import toast
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
@@ -110,22 +109,25 @@ class PostCard(MDCard):
         @mainthread
         def post_failed(error):
             toast(error)
+            print(error)
+
+        app = App.get_running_app()
 
         if LinkedInButton.active:
-            threading.Thread(target=LinkedIn.post, args=(cls.to_post_post,
-                                                         cls.save_post,
-                                                         lambda e: mainthread(toast(
-                                                             "Couldn't Post on LinkedIn Because:\n" + str(e))))).start()
-        if TwitterButton.active:
-            threading.Thread(target=Twitter.post, args=(cls.to_post_post,
-                                                        cls.save_post,
-                                                        lambda e: post_failed(
-                                                            "Couldn't Post on Twitter Because:\n" + str(e)))).start()
-        if FacebookButton.active:
-            threading.Thread(target=Facebook.post, args=(cls.to_post_post,
+            threading.Thread(target=app.linkedin.post, args=(cls.to_post_post,
                                                          cls.save_post,
                                                          lambda e: post_failed(
-                                                             "Couldn't Post on Facebook Because:\n" + str(e)))).start()
+                                                             "LinkedIn:\n" + str(e)))).start()
+        if TwitterButton.active:
+            threading.Thread(target=app.twitter.post, args=(cls.to_post_post,
+                                                        cls.save_post,
+                                                        lambda e: post_failed(
+                                                            "Twitter:\n" + str(e)))).start()
+        if FacebookButton.active:
+            threading.Thread(target=app.facebook.post, args=(cls.to_post_post,
+                                                         cls.save_post,
+                                                         lambda e: post_failed(
+                                                             "Facebook:\n" + str(e)))).start()
         cls.post_dialog.dismiss()
 
     def edit(self):
