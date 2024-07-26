@@ -33,6 +33,7 @@ class PostScreen(MDBottomNavigationItem):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        app = App.get_running_app()
         self.generate_dialog = MDDialog(
             title="Generate New Post",
             type="custom",
@@ -57,35 +58,35 @@ class PostScreen(MDBottomNavigationItem):
         self.gen_num_field = MDTextField(
             hint_text="Number of Posts",
             input_filter="int",
-            text="2",
+            text=app.config.get('Post', 'num'),
             required=True
         )
         self.generate_dialog.content_cls.add_widget(self.gen_num_field)
         self.gen_area_field = MDTextField(
             hint_text="Area or Niche",
-            text="Dev Logs",
+            text=app.config.get('Post', 'area'),
             required=True
         )
         self.generate_dialog.content_cls.add_widget(self.gen_area_field)
         self.gen_tone_field = MDTextField(
             hint_text="Tone",
-            text="casual",
+            text=app.config.get('Post', 'tone'),
             required=True
         )
         self.generate_dialog.content_cls.add_widget(self.gen_tone_field)
         self.gen_note_field = MDTextField(
             hint_text="Note",
-            text="",
+            text=app.config.get('Post', 'note'),
             helper_text="Any thing you want the LLM to consider"
         )
         self.generate_dialog.content_cls.add_widget(self.gen_note_field)
         self.gen_keywords_field = MDTextField(
-            hint_text="Keywords",
+            hint_text=app.config.get('Post', 'keywords'),
         )
         self.generate_dialog.content_cls.add_widget(self.gen_keywords_field)
         self.gen_hashtags_field = MDTextField(
             hint_text="Hashtags",
-            text="#from_timelogger"
+            text=app.config.get('Post', 'hashtags'),
         )
         self.generate_dialog.content_cls.add_widget(self.gen_hashtags_field)
 
@@ -150,8 +151,8 @@ class PostScreen(MDBottomNavigationItem):
             return
 
         note = self.gen_note_field.text
-        keywords = self.gen_keywords_field
-        hashtags = self.gen_hashtags_field
+        keywords = self.gen_keywords_field.text
+        hashtags = self.gen_hashtags_field.text
 
         app = App.get_running_app()
         entries = [entry_card["entry"] for entry_card in app.root.ids.entries_screen.view_data]
@@ -161,6 +162,14 @@ class PostScreen(MDBottomNavigationItem):
             args=(entries, num, area, tone, note, keywords, hashtags, self.add_posts, self.generation_failure)
         ).start()
         self.generate_dialog.dismiss()
+
+        app.config.set('Post', 'num', num)
+        app.config.set('Post', 'area', area)
+        app.config.set('Post', 'tone', tone)
+        app.config.set('Post', 'note', note)
+        app.config.set('Post', 'keywords', keywords)
+        app.config.set('Post', 'hashtags', hashtags)
+        app.config.write()
 
     @mainthread
     def add_posts(self, posts_json: str):

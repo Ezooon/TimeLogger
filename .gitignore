@@ -4,3 +4,7 @@ socialapi/apikeys.json
 socialapi/keys.data
 user_data.data
 aitool/keys.json
+dist
+build
+continuous_logging/dist
+continuous_logging/build

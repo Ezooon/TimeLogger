@@ -19,7 +19,7 @@ class AiToolScreen(MDBottomNavigationItem):
 
         self.add_message("User", prompt)
 
-        successes = lambda x: self.add_message("BOT", x)
+        successes = lambda x: self.add_message("Time Logger", x)
         threading.Thread(target=chat.send, args=(entries, prompt, self.get_history(), successes, successes)).start()
 
     def get_history(self):
@@ -32,5 +32,6 @@ class AiToolScreen(MDBottomNavigationItem):
     def add_message(self, sender, content):
         msg_card = MessageCard(sender=sender, content=str(content))
         self.ids.messages.add_widget(msg_card)
+        self.ids.sv.scroll_y = 0
         return msg_card
 

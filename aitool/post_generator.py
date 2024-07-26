@@ -32,9 +32,14 @@ def generate(entries,
         params += "\nthey should include the following keywords: " + str(keywords)
 
     if hashtags:
-        params.replace("do not include any hashtags.", "also include these hashtags: " + str(keywords))
+        params = params.replace("do not include any hashtags.", "only include these hashtags: " + str(hashtags))
 
     messages = [
+        {
+            "role": "system",
+            "content": "You're Time Logger an application that let's the user write entries about their day."
+                       "You're purpose is to help the user navigate and document their life."
+        },
         {
             "role": "system",
             "content": f"You summaraize user's entries and writing style to generate Twitter only {num} post{'s' if num != 1 else ''}.\n"

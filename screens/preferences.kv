@@ -1,68 +1,117 @@
-<PreferencesScreen>:
+#:import DropDownSetting uix.DropDownSetting
+#:import am_pm utils.am_pm
 
+<TextButtonSetting@MDBoxLayout>:
+    setting: "Setting"
+    button_text: "Set"
+    callback: print
+    orientation: "vertical"
+    adaptive_height: True
+    MDSeparator:
     MDBoxLayout:
-        orientation: "vertical"
-        MDSeparator:
-        MDBoxLayout:
-            padding: dp(10)
-            size_hint: 1, None
-            height: dp(70)
-            MDLabel:
-                text: "Facebook"
-                color: self.theme_cls.primary_color
-                theme_text_color: "Primary"
-            MDFlatButton:
-                text: "login" if not app.logged_in_facebook else "logout"
-                pos_hint: {"center_y": 0.5}
-                text_color: self.theme_cls.accent_color
-                theme_text_color: "Custom"
-                ripple_behavior: False
-                on_release: root.facebook_login() if not app.logged_in_facebook else root.facebook_logout()
-        MDSeparator:
-        MDBoxLayout:
-            padding: dp(10)
-            size_hint: 1, None
-            height: dp(70)
-            MDLabel:
-                text: "Twitter/X"
-                color: self.theme_cls.primary_color
-                theme_text_color: "Primary"
-            MDFlatButton:
-                text: "login" if not app.logged_in_twitter else "logout"
-                pos_hint: {"center_y": 0.5}
-                text_color: self.theme_cls.accent_color
-                theme_text_color: "Custom"
-                ripple_behavior: False
-                on_release: root.twitter_login() if not app.logged_in_twitter else root.twitter_logout()
-        MDSeparator:
-        MDBoxLayout:
-            padding: dp(10)
-            size_hint: 1, None
-            height: dp(70)
-            MDLabel:
-                text: "LinkedIn"
-                color: self.theme_cls.primary_color
-                theme_text_color: "Primary"
-            MDFlatButton:
-                text: "login" if not app.logged_in_linkedin else "logout"
-                pos_hint: {"center_y": 0.5}
-                text_color: self.theme_cls.accent_color
-                theme_text_color: "Custom"
-                ripple_behavior: False
-                on_release: root.linkedin_login() if not app.logged_in_linkedin else root.linkedin_logout()
-        MDSeparator:
-        MDBoxLayout:
-            padding: dp(10), dp(10), dp(30), dp(10)
-            size_hint: 1, None
-            height: dp(70)
-            MDLabel:
-                text: "Dark Theme"
-                color: self.theme_cls.primary_color
-                theme_text_color: "Primary"
-            MDSwitch:
-                active: True
-                on_active:
-                    root.change_theme_style(self.active)
+        padding: dp(10)
+        size_hint: 1, None
+        height: dp(70)
+        MDLabel:
+            text: root.setting
+            color: self.theme_cls.primary_color
+            theme_text_color: "Primary"
+        MDFlatButton:
+            text: root.button_text
+            pos_hint: {"center_y": 0.5}
+            text_color: self.theme_cls.accent_color
+            theme_text_color: "Custom"
+            ripple_behavior: False
+            on_release: root.callback()
 
 
-        Widget:
+<Section@MDBoxLayout>:
+    orientation: 'vertical'
+    adaptive_height: True
+    text: ""
+    MDSeparator:
+    MDLabel:
+        text: root.text
+        padding: dp(3), 0, 0, 0
+        size_hint: 1, None
+        height: dp(20)
+        bold: True
+        theme_text_color: "Secondary"
+        md_bg_color: 0, 0, 0, 0.2
+
+
+<PreferencesScreen>:
+    MDScrollView:
+        MDBoxLayout:
+            orientation: "vertical"
+            adaptive_height: True
+            Section:
+                text: "Style"
+            MDSeparator:
+            MDBoxLayout:
+                padding: dp(10), dp(10), dp(30), dp(10)
+                size_hint: 1, None
+                height: dp(70)
+                MDLabel:
+                    text: "Dark Theme"
+                    color: self.theme_cls.primary_color
+                    theme_text_color: "Primary"
+                MDSwitch:
+                    active: app.config.get('Theme', 'style') == "Dark"
+                    on_active:
+                        root.change_theme_style(self.active)
+
+
+            Section:
+                text: "Accounts"
+            TextButtonSetting:
+                disabled: True
+                setting: "Facebook"
+                button_text: "login" if not app.logged_in_facebook else "logout"
+                callback: root.facebook_login if not app.logged_in_facebook else root.facebook_logout
+            TextButtonSetting:
+                setting: "Twitter/X"
+                button_text: "login" if not app.logged_in_twitter else "logout"
+                callback: root.twitter_login if not app.logged_in_twitter else root.twitter_logout
+            TextButtonSetting:
+                setting: "LinkedIn"
+                button_text: "login" if not app.logged_in_linkedin else "logout"
+                callback: root.linkedin_login if not app.logged_in_linkedin else root.linkedin_logout
+
+
+            Section:
+                text: "Continuous Logging"
+            DropDownSetting:
+                id: action
+                setting: "Action"
+                options: ["Notification", "Open Time Logger", "Open Console App", "Disable"]
+                selected_option: app.con_log['action']
+                on_selected_option:
+                    app.con_log['acton'] = self.selected_option
+                    app.save_continuous_logging_options()
+            DropDownSetting:
+                id: often
+                disabled: action.selected_option == "Disable"
+                setting: "How Often"
+                options: ["Multiple Times a Day", "On Start Up", "Once A Day"]
+                selected_option: app.con_log['often']
+                on_selected_option:
+                    app.con_log['often'] = self.selected_option
+                    app.save_continuous_logging_options()
+            DropDownSetting:
+                id: repetition
+                disabled: not often.selected_option == "Multiple Times a Day"
+                setting: "Repetition"
+                options: ["Every Hour", "Every Two Hours", "Every 30 Minet"]
+                selected_option: app.con_log['repetition']
+                on_selected_option:
+                    app.con_log['repetition'] = self.selected_option
+                    app.save_continuous_logging_options()
+
+            TextButtonSetting:
+                id: when
+                disabled: not often.selected_option == "Once A Day"
+                setting: "When"
+                button_text: am_pm(app.con_log['when'])
+                callback: root.open_time_picker
+

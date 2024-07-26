@@ -21,6 +21,7 @@ LinkedInButton = MDCheckbox(
     checkbox_icon_down="linkedin",
     active=True,
     ripple_alpha=0,
+    # disabled=True,
 )
 TwitterButton = MDCheckbox(
     checkbox_icon_normal="twitter",
@@ -31,8 +32,9 @@ TwitterButton = MDCheckbox(
 FacebookButton = MDCheckbox(
     checkbox_icon_normal="facebook",
     checkbox_icon_down="facebook",
-    active=True,
+    active=False,
     ripple_alpha=0,
+    disabled=True,
 )
 
 

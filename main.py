@@ -1,10 +1,11 @@
 import json
 import threading
+from datetime import time
 from os import path, environ
 
 from cryptography.fernet import Fernet
 
-from kivy.properties import BooleanProperty, ObjectProperty
+from kivy.properties import BooleanProperty, ObjectProperty, DictProperty
 from kivymd.app import MDApp
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screenmanager import MDScreenManager
@@ -37,12 +38,28 @@ class TimeLogger(MDApp):
     facebook = ObjectProperty(None)
     logged_in_facebook = BooleanProperty(False)
 
+    con_log = DictProperty({
+            'action': 'Notification',
+            'often': 'Multiple Times a Day',
+            'repetition': 'Every Hour',
+            'when': time(hour=21)
+        })
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.snackbar = None
 
     def build_config(self, config):
         config.setdefaults('Theme', {'style': 'Dark'})
+        config.setdefaults('Post', {
+            'num': 2,
+            'area': 'Live update',
+            'tone': 'casual',
+            'note': '',
+            'keywords': '',
+            'hashtags': '#timelogger'
+        })
+        config.setdefaults("Continuous Logging", self.con_log)
 
     def build(self):
         self.title = "Time Logger"
@@ -57,6 +74,8 @@ class TimeLogger(MDApp):
 
         self.setup_undo_snakbar()
 
+        self.load_continuous_logging_options()
+
         return SM()
 
     def login(self):
@@ -66,9 +85,10 @@ class TimeLogger(MDApp):
         self.linkedin = LinkedInAPI(
             keys["linkedin"].get("client_id"),
             keys["linkedin"].get("client_secret"),
+            user_data["linkedin"].get("user_id"),
             user_data["linkedin"].get("access_token"),
         )
-        self.logged_in_linkedin = bool(keys['linkedin'].get("access_token"))
+        self.logged_in_linkedin = bool(user_data['linkedin'].get("access_token"))
 
         self.twitter = TwitterAPI(api_key=keys["x"].get("api_key"),
                                   api_key_secret=keys["x"].get("api_key_secret"),
@@ -79,9 +99,10 @@ class TimeLogger(MDApp):
         self.facebook = FacebookAPI(
             keys["facebook"].get("client_id"),
             keys["facebook"].get("client_secret"),
+            user_data["facebook"].get("page_id"),
             user_data["facebook"].get("access_token"),
         )
-        self.logged_in_facebook = bool(keys['facebook'].get("access_token"))
+        self.logged_in_facebook = bool(user_data['facebook'].get("access_token"))
 
     def setup_undo_snakbar(self):
         self.snackbar = MDSnackbar(auto_dismiss=False)
@@ -99,8 +120,13 @@ class TimeLogger(MDApp):
     def get_keys(self):
         with open('socialapi/keys.data', 'rb') as f:
             keys = f.read()
+        keys = json.loads(app_key.decrypt(keys.decode()).decode())
 
-        return json.loads(app_key.decrypt(keys.decode()).decode())
+        # use the commented code to modify keys.data
+        # with open('socialapi/keys.data', 'wb') as f:
+        #     f.write(app_key.encrypt(json.dumps(keys).encode()))
+
+        return keys
 
     def get_user_data(self):
         if not path.exists('user_data.data'):
@@ -110,9 +136,11 @@ class TimeLogger(MDApp):
                     "access_token_secret": None
                 },
                 "linkedin": {
+                    "user_id": None,
                     "access_token": None
                 },
                 "facebook": {
+                    "page_id": None,
                     "access_token": None
                 }
             })
@@ -132,15 +160,39 @@ class TimeLogger(MDApp):
                 "access_token_secret": self.twitter.auth.access_token_secret
             },
             "linkedin": {
+                "user_id": self.linkedin.user_id,
                 "access_token": self.linkedin.access_token
             },
             "facebook": {
-                "access_token": self.linkedin.access_token
+                "page_id": self.facebook.page_id,
+                "access_token": self.facebook.access_token
             }
         })
         user_data = user_key.encrypt(data.encode())
         with open('user_data.data', 'wb') as f:
             f.write(user_data)
+
+    def load_continuous_logging_options(self):
+        self.con_log = {
+            'action': self.config.get('Continuous Logging', 'action'),
+            'often': self.config.get('Continuous Logging', 'often'),
+            'repetition': self.config.get('Continuous Logging', 'repetition'),
+            'when': time.fromisoformat(self.config.get('Continuous Logging', 'when')),
+        }
+
+    def save_continuous_logging_options(self):
+        action = self.con_log['action']
+        often = self.con_log['often']
+        repetition = self.con_log['repetition']
+        when = self.con_log['when']
+        self.config.set('Continuous Logging', 'action', action)
+        self.config.set('Continuous Logging', 'often', often)
+        self.config.set('Continuous Logging', 'repetition', repetition)
+        self.config.set('Continuous Logging', 'when', when)
+        self.schedule_con_log(action, often, repetition, when)
+
+    def schedule_con_log(self):
+        pass
 
 
 app = TimeLogger()
@@ -156,8 +208,15 @@ def twitter_login(oauth_token, oauth_verifier):
 
 @asgi_app.get("/linkedin/")
 def linkedin_login(code, state):
-    app.linkedin.get_access_token(code, state)
-    app.logged_in_linkedin = True
+    app.logged_in_linkedin = app.linkedin.get_access_token(code, state) is not None
+    app.save_user_data()
+    return HTMLResponse("Return to Time Logger")
+
+
+@asgi_app.get("/facebook/")
+def facebook_login(token, expires_in):
+    app.facebook.get_access_token(token, expires_in)
+    app.logged_in_facebook = True
     app.save_user_data()
     return HTMLResponse("Return to Time Logger")
 

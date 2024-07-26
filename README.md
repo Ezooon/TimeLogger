@@ -15,18 +15,24 @@ That, and it will have a chat with an LLM (most likely LLaMa 2) to provide you w
 
 #### Working Features
 1. Write new entries in few seconds.
-2. tag entries.
-3. attach files to entries.
-4. search through your entries.
-5. filter entries with date and tags.
+2. Tag entries.
+3. Search and filter entries with date and tags.
+4. Attach files to entries.
+5. Generate social media posts from your loaded entries.
 6. Post on X.
-7. LLM chat.
+7. Post on LinkedIn.
+8. Chat about your day(s) with a chatbot with access to your loaded entries.
 
 
 #### Under Development
 1. Continuous Logging. 
 2. Post on Facebook.
-3. Post on LinkedIn.
+
+
+#### Ideas:
+1. Dairy Tab.
+2. Control the application with the chat.
+3. Blog Editor (Integrated with Hashnode)
 
 
 ## Usage

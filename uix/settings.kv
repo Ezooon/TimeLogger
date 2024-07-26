@@ -1,0 +1,20 @@
+<DropDownSetting>:
+    orientation: "vertical"
+    adaptive_height: True
+    md_bg_color: 0, 0, 0, 0
+    MDSeparator:
+    MDBoxLayout:
+        padding: dp(10)
+        size_hint: 1, None
+        height: dp(70)
+        MDLabel:
+            text: root.setting
+            color: self.theme_cls.primary_color
+            theme_text_color: "Primary"
+        MDLabel:
+            id: selected_option
+            padding: dp(15), 0, dp(15), 0
+            text: root.selected_option
+            halign: "center"
+            adaptive_width: True
+            theme_text_color: "Secondary"
