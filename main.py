@@ -187,18 +187,18 @@ class TimeLogger(MDApp):
         often = self.con_log['often']
         repetition = self.con_log['repetition']
         when = self.con_log['when']
-        # try:
-        schedule_continuous_logging(action, often, repetition, when)
+        try:
+            schedule_continuous_logging(action, often, repetition, when)
 
-        self.config.set('Continuous Logging', 'action', action)
-        self.config.set('Continuous Logging', 'often', often)
-        self.config.set('Continuous Logging', 'repetition', repetition)
-        self.config.set('Continuous Logging', 'when', when)
+            self.config.set('Continuous Logging', 'action', action)
+            self.config.set('Continuous Logging', 'often', often)
+            self.config.set('Continuous Logging', 'repetition', repetition)
+            self.config.set('Continuous Logging', 'when', when)
 
-        self.config.write()
-        # except:
-        #     toast("Restart the Application as Administrator")
-        #     self.load_continuous_logging_options()
+            self.config.write()
+        except:
+            toast("Restart the Application as Administrator")
+            self.load_continuous_logging_options()
 
 
 app = TimeLogger()
