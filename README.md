@@ -5,11 +5,11 @@
 This Is a text-based time tracker application for documenting your day.  
 It is designed for quick input to remove any friction for using it.  
 Use tags to separate and group your entries.  
+This application can  use your filtered entries to generate social media posts.  
+That, and it has a chat (most likely LLaMa 2) to provide you with insight on your days.  
 
-### Soon
-This application will also be able to use your filtered entries to generate social media posts.  
-That, and it will have a chat with an LLM (most likely LLaMa 2) to provide you with insight on your days.  
-
+> ##### Pro tip  
+> the "you" pronouns in your entries would be considered as your talking to the chatbot 
 
 ## Features
 
@@ -19,14 +19,14 @@ That, and it will have a chat with an LLM (most likely LLaMa 2) to provide you w
 3. Search and filter entries with date and tags.
 4. Attach files to entries.
 5. Generate social media posts from your loaded entries.
-6. Post on X.
-7. Post on LinkedIn.
-8. Chat about your day(s) with a chatbot with access to your loaded entries.
+6. Continuous Logging, don't forget to log.
+7. Post on X.
+8. Post on LinkedIn.
+9. Chat about your day(s) with a chatbot with access to your loaded entries.
 
 
-#### Under Development
-1. Continuous Logging. 
-2. Post on Facebook.
+#### Under Development 
+1. Post on Facebook.
 
 
 #### Ideas:
@@ -63,12 +63,4 @@ The UI is quit straightforward except for adding tags you'll need to use "%%" in
 Also you can't yet add an image from the clipboard.  
 
 ![an image for the ui](assets/readme/1.png)
-
-
-
-
-
-
-
-
 

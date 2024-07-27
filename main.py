@@ -19,8 +19,12 @@ from continuous_logging.schedule import schedule_continuous_logging
 from uvicorn import run
 from fastapi import FastAPI
 
-user_key = Fernet(environ.get("user_key"))
-app_key = Fernet(environ.get("app_key"))
+try: user_key = Fernet(environ.get("user_key"))
+except: user_key = None
+
+try: app_key = Fernet(environ.get("app_key"))
+except: app_key = None
+
 asgi_app = FastAPI()
 
 
@@ -92,8 +96,8 @@ class TimeLogger(MDApp):
         )
         self.logged_in_linkedin = bool(user_data['linkedin'].get("access_token"))
 
-        self.twitter = TwitterAPI(api_key=keys["x"].get("api_key"),
-                                  api_key_secret=keys["x"].get("api_key_secret"),
+        self.twitter = TwitterAPI(api_key=keys["x"].get("api_key", ""),
+                                  api_key_secret=keys["x"].get("api_key_secret", ""),
                                   access_token=user_data["x"].get("access_token"),
                                   access_token_secret=user_data["x"].get("access_token_secret"))
         self.logged_in_twitter = bool(user_data["x"].get("access_token"))
@@ -120,20 +124,25 @@ class TimeLogger(MDApp):
         ))
 
     def get_keys(self):
+        if not app_key:
+            return {
+                "x": {},
+                "facebook": {},
+                "linkedin": {}
+                }
+
         with open('socialapi/keys.data', 'rb') as f:
             keys = f.read()
         keys = json.loads(app_key.decrypt(keys.decode()).decode())
 
         # use the commented code to modify keys.data
-        # with open('socialapi/keys.data', 'wb') as f:
-        #     f.write(app_key.encrypt(json.dumps(keys).encode()))
+        with open('socialapi/keys.data', 'wb') as f:
+            f.write(app_key.encrypt(json.dumps(keys).encode()))
 
         return keys
 
     def get_user_data(self):
-        if not path.exists('user_data.data'):
-            data = json.dumps({
-                "x": {
+        default = {                "x": {
                     "access_token": None,
                     "access_token_secret": None
                 },
@@ -145,7 +154,13 @@ class TimeLogger(MDApp):
                     "page_id": None,
                     "access_token": None
                 }
-            })
+            }
+
+        if not user_key:
+            return default
+
+        if not path.exists('user_data.data'):
+            data = json.dumps(default)
             user_data = user_key.encrypt(data.encode())
             with open('user_data.data', 'wb') as f:
                 f.write(user_data)
