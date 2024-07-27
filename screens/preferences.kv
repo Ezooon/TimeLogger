@@ -87,7 +87,7 @@
                 options: ["Notification", "Open Time Logger", "Open Console App", "Disable"]
                 selected_option: app.con_log['action']
                 on_selected_option:
-                    app.con_log['acton'] = self.selected_option
+                    app.con_log['action'] = self.selected_option
                     app.save_continuous_logging_options()
             DropDownSetting:
                 id: often

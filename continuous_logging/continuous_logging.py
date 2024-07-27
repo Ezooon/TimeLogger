@@ -21,11 +21,17 @@ def notify(console_app_path, app_path):
 options = sys.argv
 if "console" in options:
     console_app_path = options[2] if len(options) > 2 else path.join(*path.split(path.abspath(""))[:-1], "new_log.py")
-    system(f'cmd /k "E:/Workspace/evenv10/Scripts/python.exe "{console_app_path}""')
+    if console_app_path.endswith('.py'):
+        system(f'cmd /k "E:/Workspace/evenv10/Scripts/python.exe "{console_app_path}""')
+    else:
+        system(f'cmd /k ""{console_app_path}""')
 
 elif "app" in options:
     app_path = options[2] if len(options) > 2 else path.join(*path.split(path.abspath(""))[:-1], "main.py")
-    system(f'cmd /k "E:/Workspace/evenv10/Scripts/python.exe "{app_path}""')
+    if app_path.endswith('.py'):
+        system(f'cmd /k "E:/Workspace/evenv10/Scripts/python.exe "{app_path}""')
+    else:
+        system(f'cmd /k ""{app_path}""')
 
 else:
     console_app_path = options[1] if len(options) > 1 else path.join(*path.split(path.abspath(""))[:-1], "concole_application.py")
