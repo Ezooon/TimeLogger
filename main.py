@@ -7,12 +7,14 @@ from cryptography.fernet import Fernet
 
 from kivy.properties import BooleanProperty, ObjectProperty, DictProperty
 from kivymd.app import MDApp
+from kivymd.toast import toast
 from kivymd.uix.label import MDLabel
 from kivymd.uix.screenmanager import MDScreenManager
 from kivymd.uix.snackbar import MDSnackbar, MDSnackbarActionButton
 
 from socialapi import TwitterAPI, FacebookAPI, LinkedInAPI
 from starlette.responses import HTMLResponse
+from continuous_logging.schedule import schedule_continuous_logging
 
 from uvicorn import run
 from fastapi import FastAPI
@@ -185,14 +187,18 @@ class TimeLogger(MDApp):
         often = self.con_log['often']
         repetition = self.con_log['repetition']
         when = self.con_log['when']
-        self.config.set('Continuous Logging', 'action', action)
-        self.config.set('Continuous Logging', 'often', often)
-        self.config.set('Continuous Logging', 'repetition', repetition)
-        self.config.set('Continuous Logging', 'when', when)
-        self.schedule_con_log(action, often, repetition, when)
+        try:
+            schedule_continuous_logging(action, often, repetition, when)
 
-    def schedule_con_log(self):
-        pass
+            self.config.set('Continuous Logging', 'action', action)
+            self.config.set('Continuous Logging', 'often', often)
+            self.config.set('Continuous Logging', 'repetition', repetition)
+            self.config.set('Continuous Logging', 'when', when)
+
+            self.config.write()
+        except:
+            toast("Restart the Application as Administrator")
+            self.load_continuous_logging_options()
 
 
 app = TimeLogger()
