@@ -2,10 +2,10 @@
 
 
 a = Analysis(
-    ['continuous_logging.py'],
+    ['continuous_logging\\continuous_logging.py'],
     pathex=[],
     binaries=[],
-    datas=[],
+    datas=[('assets/logo.png', '.')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
@@ -35,5 +35,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['cllogo.ico'],
+    icon=['assets\\cllogo.ico'],
 )

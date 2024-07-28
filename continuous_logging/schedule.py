@@ -61,7 +61,7 @@ def schedule_continuous_logging(action, often, repetition, when: datetime.time):
     elif action == "Open Console App" and path.exists((console_app_path)):
         tsk_action.Arguments = f'console "{console_app_path}"'
     else:
-        tsk_action.Arguments = f'{console_app_path}, {app_path}'
+        tsk_action.Arguments = f'"{console_app_path}", "{app_path}"'
     print(tsk_action.Arguments, action)
 
     # Set parameters

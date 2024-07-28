@@ -9,7 +9,7 @@ from PyInstaller.utils.hooks import collect_submodules
 path = os.path.abspath(".")
 modules = collect_submodules("database") + collect_submodules("screens") + collect_submodules("uix") + collect_submodules("plyer.platforms.win.filechooser")
 
-print("shit "*100, collect_submodules("uix"))
+
 a = Analysis(
     ['main.py'],
     pathex=[],
@@ -27,7 +27,8 @@ a = Analysis(
         ('socialapi/keys.data', 'socialapi')
     ],
     hiddenimports=modules + [
-
+    'uvicorn',
+    'fastapi',
     'screens.__init__',
     'screens.aitool',
     'screens.entries',

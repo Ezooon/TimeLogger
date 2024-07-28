@@ -134,25 +134,26 @@ class LinkedInAPI:
             f"{self.client_id}&redirect_uri=http://localhost:7888/linkedin/&"
             "scope=w_member_social%20openid%20email%20profile")
 
-    def get_access_token(self, code, state):
+    def get_access_token(self, code):
+        try:
+            url = 'https://www.linkedin.com/oauth/v2/accessToken'
+            params = {
+                'grant_type': 'authorization_code',
+                'code': code,
+                'redirect_uri': 'http://localhost:7888/linkedin/',
+                'client_id': self.client_id,
+                'client_secret': self.client_secret
+            }
+            response = requests.post(url, data=params)
 
-        url = 'https://www.linkedin.com/oauth/v2/accessToken'
-        params = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': 'http://localhost:7888/linkedin/',
-            'client_id': self.client_id,
-            'client_secret': self.client_secret
-        }
-        response = requests.post(url, data=params)
-        print(response.json())
-
-        if response.status_code == 200:
-            self.access_token = response.json()['access_token']
-            self.login()
-            return self.access_token
-        else:  # ToDo raise an exception
-            return print(f'{response.status_code}: {response.text}')
+            if response.status_code == 200:
+                self.access_token = response.json()['access_token']
+                self.login()
+                return self.access_token
+            else:  # ToDo raise an exception
+                return print(f'{response.status_code}: {response.text}')
+        except Exception as e:
+            print(e)
 
     def get_user_id(self):
         # url = "https://api.linkedin.com/v2/me"

@@ -230,8 +230,8 @@ if __name__ == "__main__":
 
 
     @asgi_app.get("/linkedin/")
-    def linkedin_login(code, state):
-        app.logged_in_linkedin = app.linkedin.get_access_token(code, state) is not None
+    def linkedin_login(code):
+        app.logged_in_linkedin = app.linkedin.get_access_token(code) is not None
         app.save_user_data()
         return HTMLResponse("Return to Time Logger")
 
