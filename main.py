@@ -45,7 +45,7 @@ class TimeLogger(MDApp):
     logged_in_facebook = BooleanProperty(False)
 
     con_log = DictProperty({
-            'action': 'Notification',
+            'action': 'Disable',
             'often': 'Multiple Times a Day',
             'repetition': 'Every Hour',
             'when': time(hour=21)
@@ -59,7 +59,7 @@ class TimeLogger(MDApp):
         config.setdefaults('Theme', {'style': 'Dark'})
         config.setdefaults('Post', {
             'num': 2,
-            'area': 'Live update',
+            'area': 'Live updates',
             'tone': 'casual',
             'note': '',
             'keywords': '',
@@ -216,34 +216,35 @@ class TimeLogger(MDApp):
             self.load_continuous_logging_options()
 
 
-app = TimeLogger()
+if __name__ == "__main__":
+    app = TimeLogger()
 
 
-@asgi_app.get("/x/")
-def twitter_login(oauth_token, oauth_verifier):
-    app.twitter.get_access_token(oauth_token, oauth_verifier)
-    app.logged_in_twitter = True
-    app.save_user_data()
-    return HTMLResponse("Return to Time Logger")
+    @asgi_app.get("/x/")
+    def twitter_login(oauth_token, oauth_verifier):
+        app.twitter.get_access_token(oauth_token, oauth_verifier)
+        app.logged_in_twitter = True
+        app.save_user_data()
+        return HTMLResponse("Return to Time Logger")
 
 
-@asgi_app.get("/linkedin/")
-def linkedin_login(code, state):
-    app.logged_in_linkedin = app.linkedin.get_access_token(code, state) is not None
-    app.save_user_data()
-    return HTMLResponse("Return to Time Logger")
+    @asgi_app.get("/linkedin/")
+    def linkedin_login(code, state):
+        app.logged_in_linkedin = app.linkedin.get_access_token(code, state) is not None
+        app.save_user_data()
+        return HTMLResponse("Return to Time Logger")
 
 
-@asgi_app.get("/facebook/")
-def facebook_login(token, expires_in):
-    app.facebook.get_access_token(token, expires_in)
-    app.logged_in_facebook = True
-    app.save_user_data()
-    return HTMLResponse("Return to Time Logger")
+    @asgi_app.get("/facebook/")
+    def facebook_login(token, expires_in):
+        app.facebook.get_access_token(token, expires_in)
+        app.logged_in_facebook = True
+        app.save_user_data()
+        return HTMLResponse("Return to Time Logger")
 
 
-server_thread = threading.Thread(target=run, args=(asgi_app,), kwargs={"host": "127.0.0.1", "port": 7888}, daemon=True)
-server_thread.start()
-app.run()
-from database.db_api import db_api
-db_api.close()
+    server_thread = threading.Thread(target=run, args=(asgi_app,), kwargs={"host": "127.0.0.1", "port": 7888}, daemon=True)
+    server_thread.start()
+    app.run()
+    from database.db_api import db_api
+    db_api.close()

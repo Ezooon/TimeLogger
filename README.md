@@ -24,11 +24,8 @@ That, and it has a chat (most likely LLaMa 2) to provide you with insight on you
 8. Post on LinkedIn.
 9. Chat about your day(s) with a chatbot with access to your loaded entries.
 
-
 #### Under Development 
 1. Post on Facebook.
-
-
 #### Ideas:
 1. Dairy Tab.
 2. Control the application with the chat.
