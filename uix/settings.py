@@ -2,8 +2,9 @@ from kivymd.uix.card import MDCard
 from kivy.properties import StringProperty, ListProperty
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.lang import Builder
+from utils import resource_path
 
-Builder.load_file('./uix/settings.kv')
+Builder.load_file(resource_path('uix/settings.kv'))
 
 
 class DropDownSetting(MDCard):

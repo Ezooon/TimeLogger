@@ -15,6 +15,7 @@ from kivymd.uix.snackbar import MDSnackbar, MDSnackbarActionButton
 from socialapi import TwitterAPI, FacebookAPI, LinkedInAPI
 from starlette.responses import HTMLResponse
 from continuous_logging.schedule import schedule_continuous_logging
+from utils import resource_path
 
 from uvicorn import run
 from fastapi import FastAPI
@@ -69,7 +70,7 @@ class TimeLogger(MDApp):
 
     def build(self):
         self.title = "Time Logger"
-        self.icon = "assets/logo.png"
+        self.icon = resource_path("assets/logo.png")
         self.theme_cls.theme_style = self.config.get('Theme', 'style')
         self.theme_cls.primary_palette = "Yellow"  # 'Cyan', 'Teal', 'Green', 'LightGreen', 'Lime', 'Yellow',
         # 'Amber', 'Orange', 'DeepOrange', 'Brown', 'Gray', 'BlueGray']
@@ -131,18 +132,18 @@ class TimeLogger(MDApp):
                 "linkedin": {}
                 }
 
-        with open('socialapi/keys.data', 'rb') as f:
+        with open(resource_path('socialapi/keys.data'), 'rb') as f:
             keys = f.read()
         keys = json.loads(app_key.decrypt(keys.decode()).decode())
 
         # use the commented code to modify keys.data
-        with open('socialapi/keys.data', 'wb') as f:
-            f.write(app_key.encrypt(json.dumps(keys).encode()))
+        # with open(resource_path('socialapi/keys.data'), 'wb') as f:
+        #     f.write(app_key.encrypt(json.dumps(keys).encode()))
 
         return keys
 
     def get_user_data(self):
-        default = {                "x": {
+        default = {"x": {
                     "access_token": None,
                     "access_token_secret": None
                 },
@@ -162,10 +163,10 @@ class TimeLogger(MDApp):
         if not path.exists('user_data.data'):
             data = json.dumps(default)
             user_data = user_key.encrypt(data.encode())
-            with open('user_data.data', 'wb') as f:
+            with open(resource_path('user_data.data'), 'wb') as f:
                 f.write(user_data)
 
-        with open("user_data.data", 'r') as f:
+        with open(resource_path("user_data.data"), 'r') as f:
             user_data = user_key.decrypt(f.read()).decode()
 
         return json.loads(user_data)
@@ -186,7 +187,7 @@ class TimeLogger(MDApp):
             }
         })
         user_data = user_key.encrypt(data.encode())
-        with open('user_data.data', 'wb') as f:
+        with open(resource_path('user_data.data'), 'wb') as f:
             f.write(user_data)
 
     def load_continuous_logging_options(self):

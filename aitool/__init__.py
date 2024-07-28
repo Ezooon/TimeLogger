@@ -1,12 +1,14 @@
 import json
 from os.path import exists
 from groq import Groq
+from utils import resource_path
 
-if not exists("./aitool/keys.json"):
-    with open("./aitool/keys.json", 'w') as f:
+keypa = resource_path("./aitool/keys.json")
+if not exists(keypa):
+    with open(keypa, 'w') as f:
         json.dump({"GROQ_API_KEY": "<Put your API key here>"}, f, indent=2)
 
-with open("./aitool/keys.json", 'r') as f:
+with open(keypa, 'r') as f:
     keys = json.load(f)
 
 client = Groq(

@@ -1,4 +1,5 @@
 from sqlite3 import connect
+from utils import resource_path
 
 
 def wrap_dt(timestamp):
@@ -20,7 +21,7 @@ def db_tuple(values, wrapper=""):
     return str(values)
 
 
-db_path = "database/logs.db"
+db_path = resource_path("database/logs.db")
 
 
 class DBAPI:

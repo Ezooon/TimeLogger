@@ -3,8 +3,9 @@ from kivy.lang import Builder
 from kivymd.toast import toast
 from kivymd.uix.pickers import MDTimePicker
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
+from utils import resource_path
 
-Builder.load_file("screens/preferences.kv")
+Builder.load_file(resource_path("screens/preferences.kv"))
 
 
 class PreferencesScreen(MDBottomNavigationItem):

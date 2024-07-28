@@ -1,4 +1,5 @@
 from kivy.app import App
+from utils import resource_path
 from kivy.clock import Clock
 from kivy.lang import Builder
 from kivymd.uix.button import MDFlatButton
@@ -9,7 +10,7 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.properties import ObjectProperty, ColorProperty
 from kivymd.uix.behaviors import RectangularRippleBehavior
 
-Builder.load_file("uix/tagchip.kv")
+Builder.load_file(resource_path("uix/tagchip.kv"))
 
 
 class TagChip(RectangularRippleBehavior, ButtonBehavior, MDLabel):

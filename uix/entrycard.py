@@ -1,14 +1,15 @@
 from kivy.lang import Builder
 from datetime import datetime
 from kivymd.uix.card import MDCard
-from kivy.properties import ObjectProperty, StringProperty, ListProperty, BooleanProperty
+from kivy.properties import ObjectProperty, StringProperty, ListProperty
 from kivy.clock import Clock
 from kivy.app import App
+from utils import resource_path
 
 from .attachmentcard import AttachmentCard
 from .tagchip import TagChip
 
-Builder.load_file("uix/entrycard.kv")
+Builder.load_file(resource_path("uix/entrycard.kv"))
 
 
 class EntryCard(MDCard):

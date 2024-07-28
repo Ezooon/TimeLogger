@@ -7,7 +7,6 @@ class Tags(DBTable):
     default_values = {
         "id": 0,
         "tag": "",
-        "color": '2EC7FF',
     }
 
     def __init__(self, name="", default_values=None):

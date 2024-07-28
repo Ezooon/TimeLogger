@@ -3,10 +3,11 @@ from kivy.lang import Builder
 from uix.messagecard import MessageCard
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
 from kivy.clock import mainthread
+from utils import resource_path
 from aitool import chat
 
 
-Builder.load_file("screens/aitool.kv")
+Builder.load_file(resource_path("screens/aitool.kv"))
 
 
 class AiToolScreen(MDBottomNavigationItem):

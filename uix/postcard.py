@@ -1,5 +1,5 @@
 import threading
-
+from utils import resource_path
 from kivy.lang import Builder
 from datetime import datetime
 from kivymd.toast import toast
@@ -14,7 +14,7 @@ from kivymd.uix.dialog import MDDialog
 
 from .attachmentcard import AttachmentCard
 
-Builder.load_file("uix/postcard.kv")
+Builder.load_file(resource_path("uix/postcard.kv"))
 
 LinkedInButton = MDCheckbox(
     checkbox_icon_normal="linkedin",

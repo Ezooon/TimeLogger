@@ -14,12 +14,13 @@ from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 
-from uix import PostCard
+from utils import resource_path
 from aitool import generate
 
 from database import Post, wrap_dt
 
-Builder.load_file("screens/post.kv")
+
+Builder.load_file(resource_path("screens/post.kv"))
 today = datetime.today()
 
 

@@ -29,7 +29,6 @@ That, and it has a chat (most likely LLaMa 2) to provide you with insight on you
 #### Ideas:
 1. Dairy Tab.
 2. Control the application with the chat.
-3. Blog Editor (Integrated with Hashnode)
 
 
 ## Usage

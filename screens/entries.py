@@ -7,11 +7,11 @@ from kivy.properties import ListProperty, BooleanProperty, ObjectProperty, DictP
 from kivymd.uix.bottomnavigation import MDBottomNavigationItem
 from kivymd.uix.pickers import MDDatePicker
 from plyer import filechooser
-
+from utils import resource_path
 from database import Entry, Post, wrap_dt, Attachment, Tag
 from uix import TagChip, AttachmentCard
 
-Builder.load_file("screens/entries.kv")
+Builder.load_file(resource_path("screens/entries.kv"))
 today = date.today()
 
 
