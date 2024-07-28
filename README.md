@@ -52,7 +52,7 @@ double quotes or without spaces.
     
 ```
 >#### Note: 
->you can attach an image from the clipboard by writing "**clp"
+> you can attach an image from the clipboard by typing "**clp"
 > in the entry (only on console application) 
 
 ## GUI Application 
